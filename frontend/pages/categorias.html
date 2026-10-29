@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorias | Flow Agendas</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="../js/categorias.js" defer></script>
+</head>
+<body>
+    <header class="cabecalho">
+        <div class="container">
+            <span class="marca">Flow Agendas</span>
+            <span class="subtítulo">Gestão de Categorias</span>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="titulo-pagina">
+            <p class="legenda">CADASTROS</p>
+            <h1>Categorias</h1>
+            <p>Gerencie as categorias de compromissos da sua agenda.</p>
+        </div>
+
+        <p id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></p>
+
+        <section class="painel">
+            <div class="painel-título">
+                <h2 id="titulo-formulario">Nova Categoria</h2>
+            </div>
+            
+            <form id="form-categoria" class="formulario">
+                <div class="campos">
+                    <div class="campo">
+                        <label for="id-categoria">ID</label>
+                        <input id="id-categoria" type="text" placeholder="Automático" readonly>
+                    </div>
+                    <div class="campo">
+                        <label for="nome">Nome</label>
+                        <input id="nome" type="text" maxlength="30" placeholder="Ex: Estudo" required>
+                    </div>
+                    <div class="campo">
+                        <label for="cor_hex">Cor</label>
+                        <input id="cor_hex" type="color" required style="height: 45px; width: 100%;">
+                    </div>
+                    <div class="campo">
+                        <label for="peso_energia">Peso Energia</label>
+                        <input id="peso_energia" type="number" min="1" max="5" required>
+                    </div>
+                </div>
+
+                <div class="acoes">
+                    <button id="botao-salvar" class="botao botao-principal" type="submit">Salvar</button>
+                    <button id="botao-limpar" class="botao botao-secundario" type="button">Limpar</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="painel">
+            <div class="painel-título">
+                <h2>Categorias cadastradas</h2>
+                <span id="total-categorias" class="legenda">Carregando...</span>
+            </div>
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Cor</th>
+                            <th>Peso</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-categorias">
+                        <tr><td colspan="5">Carregando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
