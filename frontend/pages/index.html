@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow Agendas — Protótipo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR -->
+    <header class="top-navbar" id="navbar">
+        <div class="brand" onclick="navTo('screen-menu', 'nav-dashboard')">Flow <span>Agendas</span></div>
+
+        <nav class="nav-links hidden" id="nav-links">
+            <button class="nav-btn" id="nav-dashboard" onclick="navTo('screen-menu', 'nav-dashboard')">Dashboard</button>
+            <button class="nav-btn" id="nav-tarefas" onclick="navTo('screen-tarefas', 'nav-tarefas')">Tarefas</button>
+            <button class="nav-btn" id="nav-habitos" onclick="navTo('screen-habitos', 'nav-habitos')">Hábitos</button>
+            <button class="nav-btn" id="nav-metas" onclick="navTo('screen-metas', 'nav-metas')">Metas</button>
+            <button class="nav-btn" id="nav-bemestar" onclick="navTo('screen-bemestar', 'nav-bemestar')">Bem-estar</button>
+            <button class="nav-btn" id="nav-aya" onclick="navTo('screen-aya', 'nav-aya')">Aya</button>
+            <button class="nav-btn" id="nav-config" onclick="navTo('screen-config', 'nav-config')">Config.</button>
+        </nav>
+
+        <div class="user-profile hidden" id="user-area" onclick="navTo('screen-config', 'nav-config')">
+            <span id="display-username">Aluno</span>
+            <div class="avatar" id="avatar-letter">A</div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- LOGIN -->
+        <section id="screen-login" class="screen active">
+            <div class="card">
+                <h2>Flow Agendas</h2>
+                <p class="sub">Entre para acessar suas tarefas, hábitos e metas.</p>
+                <form onsubmit="event.preventDefault(); doLogin();">
+                    <div class="input-group">
+                        <label for="login-email">E-mail</label>
+                        <input type="email" id="login-email" placeholder="voce@email.com" autocomplete="email">
+                    </div>
+                    <div class="input-group">
+                        <label for="login-pass">Senha</label>
+                        <input type="password" id="login-pass" autocomplete="current-password">
+                    </div>
+                    <button class="btn btn-block" type="submit">Entrar</button>
+                </form>
+                <p class="auth-switch">Não tem conta? <button class="link-btn" onclick="navTo('screen-cadastro')">Criar conta</button></p>
+            </div>
+        </section>
+
+        <!-- CADASTRO -->
+        <section id="screen-cadastro" class="screen">
+            <div class="page-header"><div><h1>Criar conta</h1><p>Dados do estudante, instituição e curso.</p></div></div>
+            <div class="card">
+                <form onsubmit="event.preventDefault(); doCadastro();">
+                    <div class="form-grid">
+                        <div class="form-section-title">Você</div>
+                        <div class="input-group full"><label for="cad-nome">Nome completo</label><input type="text" id="cad-nome" maxlength="150" required></div>
+                        <div class="input-group"><label for="cad-email">E-mail</label><input type="email" id="cad-email" maxlength="150" required autocomplete="email"></div>
+                        <div class="input-group"><label for="cad-senha">Senha (mín. 6 caracteres)</label><input type="password" id="cad-senha" minlength="6" required autocomplete="new-password"></div>
+                        <div class="input-group"><label for="cad-nasc">Data de nascimento</label><input type="date" id="cad-nasc" required></div>
+                        <div class="input-group">
+                            <label for="cad-ano">Ano escolar</label>
+                            <select id="cad-ano"><option value="1_ano">1º ano</option><option value="2_ano">2º ano</option><option value="3_ano">3º ano</option></select>
+                        </div>
+                        <div class="input-group">
+                            <label for="cad-turno-escolar">Turno escolar</label>
+                            <select id="cad-turno-escolar"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select>
+                        </div>
+
+                        <div class="form-section-title">Instituição</div>
+                        <div class="input-group full"><label for="cad-inst">Nome da instituição</label><input type="text" id="cad-inst" maxlength="150" required></div>
+                        <div class="input-group">
+                            <label for="cad-inst-tipo">Tipo</label>
+                            <select id="cad-inst-tipo"><option value="escola">Escola</option><option value="empresa">Empresa</option><option value="ong">ONG</option><option value="outro">Outro</option></select>
+                        </div>
+                        <div class="input-group"><label for="cad-cidade">Cidade</label><input type="text" id="cad-cidade" maxlength="100" required></div>
+                        <div class="input-group"><label for="cad-uf">UF</label><input type="text" id="cad-uf" maxlength="2" placeholder="PR" required style="text-transform:uppercase"></div>
+
+                        <div class="form-section-title">Curso</div>
+                        <div class="input-group full"><label for="cad-curso">Nome do curso</label><input type="text" id="cad-curso" maxlength="150" required></div>
+                        <div class="input-group">
+                            <label for="cad-curso-turno">Turno do curso</label>
+                            <select id="cad-curso-turno"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option><option value="integral">Integral</option></select>
+                        </div>
+                        <div class="input-group"><label for="cad-curso-duracao">Duração (semestres)</label><input type="number" id="cad-curso-duracao" min="1" max="20" value="6" required></div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-ghost" onclick="navTo('screen-login')">Voltar</button>
+                        <button type="submit" class="btn">Criar conta</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- DASHBOARD -->
+        <section id="screen-menu" class="screen">
+            <div class="page-header">
+                <div><h1>Visão Geral</h1><p id="greeting-text">O que vamos fazer hoje?</p></div>
+                <div class="header-actions">
+                    <button class="btn btn-sm" onclick="openTarefa()">+ Tarefa</button>
+                    <button class="btn btn-sm btn-green" onclick="openHabito()">+ Hábito</button>
+                    <button class="btn btn-sm btn-pink" onclick="openMeta()">+ Meta</button>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card"><div class="num" id="stat-tarefas">0</div><div class="lbl" id="stat-tarefas-lbl">tarefas em aberto</div></div>
+                <div class="stat-card"><div class="num" id="stat-habitos">0/0</div><div class="lbl">hábitos de hoje</div></div>
+                <div class="stat-card"><div class="num" id="stat-metas">0</div><div class="lbl">metas ativas</div></div>
+                <div class="stat-card"><div class="num" id="stat-agua">0L</div><div class="lbl">água hoje (meta 2L)</div></div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="action-card" onclick="navTo('screen-tarefas', 'nav-tarefas')"><div class="action-icon">📋</div><div class="action-text"><h3>Tarefas</h3><p>Estudos, trabalho e compromissos</p></div></div>
+                <div class="action-card" onclick="navTo('screen-habitos', 'nav-habitos')"><div class="action-icon">🔥</div><div class="action-text"><h3>Hábitos</h3><p>Rotinas e sequências</p></div></div>
+                <div class="action-card" onclick="navTo('screen-metas', 'nav-metas')"><div class="action-icon">🎯</div><div class="action-text"><h3>Metas</h3><p>Objetivos com prazo</p></div></div>
+                <div class="action-card" onclick="navTo('screen-bemestar', 'nav-bemestar')"><div class="action-icon">🌱</div><div class="action-text"><h3>Bem-estar</h3><p>Água, sono e foco</p></div></div>
+                <div class="action-card" onclick="navTo('screen-aya', 'nav-aya')"><div class="action-icon">✨</div><div class="action-text"><h3>Aya</h3><p>Assistente de IA</p></div></div>
+                <div class="action-card" onclick="navTo('screen-config', 'nav-config')"><div class="action-icon">⚙️</div><div class="action-text"><h3>Configurações</h3><p>Perfil e curso</p></div></div>
+            </div>
+        </section>
+
+        <!-- TAREFAS -->
+        <section id="screen-tarefas" class="screen">
+            <div class="page-header">
+                <div><h1>Tarefas</h1><p>Clique no status para avançar: Pendente → Em andamento → Concluído.</p></div>
+                <div class="header-actions"><button class="btn" onclick="openTarefa()">+ Nova tarefa</button></div>
+            </div>
+            <div class="study-filters">
+                <button class="filter-pill active" id="f-aberto" onclick="filterTarefas('aberto')">Em aberto</button>
+                <button class="filter-pill" id="f-concluido" onclick="filterTarefas('concluido')">Concluídas</button>
+                <button class="filter-pill" id="f-cancelado" onclick="filterTarefas('cancelado')">Canceladas</button>
+            </div>
+            <div class="subject-list" id="subject-list"></div>
+        </section>
+
+        <!-- HÁBITOS -->
+        <section id="screen-habitos" class="screen">
+            <div class="page-header">
+                <div><h1>Hábitos</h1><p>Marque o que você fez hoje e mantenha a sequência.</p></div>
+                <div class="header-actions"><button class="btn btn-green" onclick="openHabito()">+ Novo hábito</button></div>
+            </div>
+            <div class="habit-list" id="habit-list"></div>
+        </section>
+
+        <!-- METAS -->
+        <section id="screen-metas" class="screen">
+            <div class="page-header">
+                <div><h1>Metas</h1><p>Vincule tarefas a uma meta e o progresso é calculado sozinho.</p></div>
+                <div class="header-actions"><button class="btn btn-pink" onclick="openMeta()">+ Nova meta</button></div>
+            </div>
+            <div class="meta-grid" id="meta-list"></div>
+        </section>
+
+        <!-- BEM-ESTAR -->
+        <section id="screen-bemestar" class="screen">
+            <div class="page-header"><div><h1>Bem-estar</h1><p>Registre água, sono e foco do dia.</p></div></div>
+            <div class="wellness-container">
+                <div class="wellness-row">
+                    <div class="wellness-icon-bg">💧</div>
+                    <div class="wellness-details">
+                        <h3>Hidratação</h3>
+                        <p id="water-text">Você bebeu 0L de uma meta de 2L</p>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="water-bar" style="width:0%; background:#06B6D4"></div></div>
+                    </div>
+                    <button class="btn" onclick="addWater()">+ 250ml</button>
+                </div>
+                <div class="wellness-row">
+                    <div class="wellness-icon-bg">🌙</div>
+                    <div class="wellness-details">
+                        <h3>Sono</h3>
+                        <p id="sleep-text">Você dormiu 0h de uma meta de 8h</p>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="sleep-bar" style="width:0%; background:#DB2777"></div></div>
+                    </div>
+                    <button class="btn btn-pink" onclick="addSleep()">+ 1h</button>
+                </div>
+                <div class="wellness-row">
+                    <div class="wellness-icon-bg">🧘</div>
+                    <div class="wellness-details">
+                        <h3>Foco / Meditação</h3>
+                        <p id="focus-text">Pressione iniciar para focar por 5 minutos.</p>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="focus-bar" style="width:0%; background:#059669"></div></div>
+                    </div>
+                    <button class="btn btn-green" id="btn-focus" onclick="toggleFocus()">Iniciar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONFIGURAÇÕES -->
+        <section id="screen-config" class="screen">
+            <div class="page-header"><div><h1>Configurações</h1><p>Gerencie sua conta.</p></div></div>
+            <div class="card">
+                <div class="settings-section">
+                    <h3>Perfil do estudante</h3>
+                    <div class="form-grid">
+                        <div class="input-group full"><label for="config-name">Nome de exibição</label><input type="text" id="config-name" maxlength="150" oninput="updateName(this.value)"></div>
+                        <div class="input-group"><label for="config-email">E-mail</label><input type="text" id="config-email" readonly></div>
+                        <div class="input-group"><label for="config-inst">Instituição</label><input type="text" id="config-inst" readonly></div>
+                        <div class="input-group"><label for="config-curso">Curso</label><input type="text" id="config-curso" readonly></div>
+                        <div class="input-group">
+                            <label for="config-ano">Ano escolar</label>
+                            <select id="config-ano"><option value="1_ano">1º ano</option><option value="2_ano">2º ano</option><option value="3_ano">3º ano</option></select>
+                        </div>
+                        <div class="input-group">
+                            <label for="config-turno">Turno escolar</label>
+                            <select id="config-turno"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Preferências</h3>
+                    <div class="setting-row"><span>Tema</span><select><option>Claro (padrão)</option><option disabled>Escuro (em breve)</option></select></div>
+                    <div class="setting-row"><span>Idioma</span><select><option>Português (BR)</option><option>English</option></select></div>
+                    <p class="hint">Tema e idioma ainda não existem no banco de dados; são só visuais.</p>
+                </div>
+                <div class="settings-footer">
+                    <button class="btn btn-ghost" onclick="logout()">Sair da conta</button>
+                    <button class="btn" onclick="saveConfig()">Salvar alterações</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHAT AYA -->
+        <section id="screen-aya" class="screen">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="aya-avatar" id="aya-face">✨</div>
+                    <div class="chat-header-info"><h3>Aya</h3><p>Online</p></div>
+                </div>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="typing-bar" id="typing-bar">Aya está digitando…</div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Pergunte algo para a Aya..." onkeypress="handleEnter(event)" autocomplete="off">
+                    <button class="btn" onclick="sendMessage()">Enviar</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAIS -->
+    <div class="modal-overlay" id="modal-tarefa" onclick="if(event.target===this)closeModal('modal-tarefa')">
+        <div class="modal">
+            <h2>Nova tarefa</h2>
+            <p class="sub">Vira um compromisso na sua agenda.</p>
+            <form id="form-tarefa" onsubmit="event.preventDefault(); saveTarefa();">
+                <div class="input-group"><label for="tarefa-titulo">Título</label><input type="text" id="tarefa-titulo" maxlength="150" placeholder="Ex: Revisar Ciências" required></div>
+                <div class="input-group"><label for="tarefa-descricao">Descrição (opcional)</label><textarea id="tarefa-descricao" rows="2"></textarea></div>
+                <div class="form-grid">
+                    <div class="input-group"><label for="tarefa-categoria">Categoria</label><select id="tarefa-categoria"></select></div>
+                    <div class="input-group">
+                        <label for="tarefa-prioridade">Prioridade</label>
+                        <select id="tarefa-prioridade"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select>
+                    </div>
+                    <div class="input-group"><label for="tarefa-inicio">Início</label><input type="datetime-local" id="tarefa-inicio" required></div>
+                    <div class="input-group"><label for="tarefa-fim">Fim</label><input type="datetime-local" id="tarefa-fim" required></div>
+                    <div class="input-group"><label for="tarefa-local">Local (opcional)</label><input type="text" id="tarefa-local" maxlength="150"></div>
+                    <div class="input-group"><label for="tarefa-meta">Vincular a uma meta</label><select id="tarefa-meta"></select></div>
+                </div>
+                <label class="check-line"><input type="checkbox" id="tarefa-dia-inteiro"> Dia inteiro (usa só as datas)</label>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-tarefa')">Cancelar</button>
+                    <button type="submit" class="btn">Salvar tarefa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-habito" onclick="if(event.target===this)closeModal('modal-habito')">
+        <div class="modal">
+            <h2>Novo hábito</h2>
+            <p class="sub">Uma rotina que se repete, com check-in diário.</p>
+            <form id="form-habito" onsubmit="event.preventDefault(); saveHabito();">
+                <div class="input-group"><label for="habito-titulo">Nome do hábito</label><input type="text" id="habito-titulo" maxlength="150" placeholder="Ex: Ler 20 minutos" required></div>
+                <div class="input-group"><label for="habito-descricao">Descrição (opcional)</label><input type="text" id="habito-descricao" maxlength="150"></div>
+                <div class="form-grid">
+                    <div class="input-group"><label for="habito-categoria">Categoria</label><select id="habito-categoria"></select></div>
+                    <div class="input-group">
+                        <label for="habito-tipo">Frequência</label>
+                        <select id="habito-tipo" onchange="toggleDiasHabito()"><option value="diaria">Todos os dias</option><option value="semanal">Dias da semana</option></select>
+                    </div>
+                </div>
+                <div class="input-group hidden" id="habito-dias-wrap">
+                    <label>Quais dias?</label>
+                    <div class="day-chips" id="habito-dias">
+                        <button type="button" class="day-chip" data-d="1" onclick="this.classList.toggle('on')">Seg</button>
+                        <button type="button" class="day-chip" data-d="2" onclick="this.classList.toggle('on')">Ter</button>
+                        <button type="button" class="day-chip" data-d="3" onclick="this.classList.toggle('on')">Qua</button>
+                        <button type="button" class="day-chip" data-d="4" onclick="this.classList.toggle('on')">Qui</button>
+                        <button type="button" class="day-chip" data-d="5" onclick="this.classList.toggle('on')">Sex</button>
+                        <button type="button" class="day-chip" data-d="6" onclick="this.classList.toggle('on')">Sáb</button>
+                        <button type="button" class="day-chip" data-d="7" onclick="this.classList.toggle('on')">Dom</button>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-habito')">Cancelar</button>
+                    <button type="submit" class="btn btn-green">Salvar hábito</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-meta" onclick="if(event.target===this)closeModal('modal-meta')">
+        <div class="modal">
+            <h2>Nova meta</h2>
+            <p class="sub">Defina o objetivo; depois vincule tarefas a ele.</p>
+            <form id="form-meta" onsubmit="event.preventDefault(); saveMeta();">
+                <div class="input-group"><label for="meta-titulo">Meta</label><input type="text" id="meta-titulo" maxlength="150" placeholder="Ex: Passar em Matemática" required></div>
+                <div class="input-group"><label for="meta-descricao">Descrição (opcional)</label><textarea id="meta-descricao" rows="2"></textarea></div>
+                <div class="input-group"><label for="meta-prazo">Prazo (opcional)</label><input type="date" id="meta-prazo"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-meta')">Cancelar</button>
+                    <button type="submit" class="btn btn-pink">Salvar meta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-wrap"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

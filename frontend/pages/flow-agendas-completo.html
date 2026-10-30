@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow Agendas — Protótipo</title>
+    <style>
+/* =====================================================
+   Flow Agendas — protótipo
+   Estilo simples: cores chapadas, bordas finas, sem animações
+   ===================================================== */
+:root {
+    --primary: #4F46E5;
+    --primary-dark: #3730A3;
+    --bg: #F3F4F6;
+    --card: #FFFFFF;
+    --border: #D1D5DB;
+    --text: #111827;
+    --muted: #6B7280;
+    --green: #059669;
+    --pink: #DB2777;
+    --amber: #D97706;
+    --red: #DC2626;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4 { line-height: 1.25; }
+.hidden { display: none !important; }
+
+/* ---------- Barra superior ---------- */
+.top-navbar {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 10px 20px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+}
+.brand { font-size: 20px; font-weight: 700; color: var(--primary-dark); cursor: pointer; }
+.brand span { font-weight: 400; color: var(--pink); }
+
+.nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav-btn {
+    background: none; border: 1px solid transparent; padding: 7px 12px; border-radius: 6px;
+    font-size: 14px; color: var(--muted); cursor: pointer;
+}
+.nav-btn:hover { background: #F3F4F6; }
+.nav-btn.active { background: #EEF2FF; border-color: #C7D2FE; color: var(--primary-dark); font-weight: 600; }
+
+.user-profile { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--primary); color: #fff; font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* ---------- Layout ---------- */
+.container { max-width: 980px; margin: 0 auto; padding: 24px 20px 60px; }
+.screen { display: none; }
+.screen.active { display: block; }
+
+.page-header {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.page-header h1 { font-size: 26px; color: var(--primary-dark); }
+.page-header p { color: var(--muted); font-size: 14px; margin-top: 2px; }
+.header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.card, .glass-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* ---------- Formulários ---------- */
+.input-group { margin-bottom: 14px; }
+.input-group label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+input[type="text"], input[type="password"], input[type="email"], input[type="date"],
+input[type="datetime-local"], input[type="number"], select, textarea {
+    width: 100%; padding: 8px 10px; font-size: 14px; font-family: inherit;
+    border: 1px solid var(--border); border-radius: 6px; background: #fff; color: var(--text);
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid #C7D2FE; border-color: var(--primary); }
+input[readonly] { background: #F3F4F6; color: var(--muted); }
+textarea { resize: vertical; }
+input[type="checkbox"] { width: 16px; height: 16px; }
+.check-line { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 16px; }
+.form-grid .full { grid-column: 1 / -1; }
+.form-section-title {
+    grid-column: 1 / -1; margin: 8px 0 12px; padding-bottom: 6px;
+    font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--primary);
+    border-bottom: 1px solid var(--border);
+}
+.hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ---------- Botões ---------- */
+.btn {
+    background: var(--primary); color: #fff; border: 1px solid var(--primary);
+    padding: 9px 16px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.btn:hover { background: var(--primary-dark); }
+.btn:active { opacity: 0.85; }
+.btn-block { width: 100%; }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+.btn-green { background: var(--green); border-color: var(--green); }
+.btn-green:hover { background: #047857; }
+.btn-pink { background: var(--pink); border-color: var(--pink); }
+.btn-pink:hover { background: #BE185D; }
+.btn-ghost { background: #fff; color: var(--text); border-color: var(--border); }
+.btn-ghost:hover { background: #F3F4F6; }
+
+.link-btn { background: none; border: none; color: var(--primary); font-size: 14px; text-decoration: underline; cursor: pointer; }
+.auth-switch { text-align: center; margin-top: 14px; font-size: 14px; color: var(--muted); }
+
+.icon-btn { background: none; border: 1px solid transparent; border-radius: 6px; width: 30px; height: 30px; cursor: pointer; font-size: 14px; color: var(--muted); }
+.icon-btn:hover { background: #F3F4F6; border-color: var(--border); }
+.icon-btn.del:hover { color: var(--red); }
+
+.mini-btn { background: #F3F4F6; border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
+.mini-btn:hover { background: #E5E7EB; }
+.mini-btn.ok { color: var(--green); border-color: #A7F3D0; background: #ECFDF5; }
+
+/* ---------- Chips e selos ---------- */
+.meta-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; font-size: 12px; border: 1px solid var(--border); border-radius: 10px; background: #fff; color: var(--muted); }
+.chip .dotc { width: 8px; height: 8px; border-radius: 50%; }
+.chip.late { color: var(--red); border-color: #FCA5A5; background: #FEF2F2; }
+
+.prio { padding: 2px 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 10px; }
+.prio-baixa { background: #F3F4F6; color: #6B7280; }
+.prio-media { background: #DBEAFE; color: #1D4ED8; }
+.prio-alta { background: #FFEDD5; color: #C2410C; }
+.prio-urgente { background: #FEE2E2; color: #B91C1C; }
+
+.status-badge { padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; user-select: none; }
+.status-pendente { background: #FEF3C7; color: #92400E; }
+.status-andamento { background: #DBEAFE; color: #1D4ED8; }
+.status-concluido { background: #D1FAE5; color: #065F46; }
+.status-cancelado { background: #F3F4F6; color: #6B7280; }
+
+.empty-state { text-align: center; padding: 32px 16px; color: var(--muted); border: 1px dashed var(--border); border-radius: 8px; background: #fff; }
+.empty-state .big { font-size: 32px; margin-bottom: 6px; }
+.empty-state p { margin-bottom: 12px; }
+
+/* ---------- Login / cadastro ---------- */
+#screen-login { max-width: 420px; margin: 40px auto 0; }
+#screen-login .card h2 { font-size: 22px; margin-bottom: 4px; color: var(--primary-dark); }
+#screen-login .card .sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+
+/* ---------- Dashboard ---------- */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.stat-card .num { font-size: 26px; font-weight: 700; color: var(--primary-dark); }
+.stat-card .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.action-card { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; cursor: pointer; }
+.action-card:hover { border-color: var(--primary); background: #FAFAFF; }
+.action-icon { font-size: 24px; }
+.action-text h3 { font-size: 15px; }
+.action-text p { font-size: 12px; color: var(--muted); }
+
+/* ---------- Tarefas ---------- */
+.study-filters { display: flex; gap: 6px; margin-bottom: 14px; }
+.filter-pill { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 5px 14px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.filter-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+.subject-list { display: flex; flex-direction: column; gap: 10px; }
+.subject-row {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--cat, var(--primary));
+    border-radius: 8px; padding: 12px 14px;
+}
+.subject-info { flex: 1; min-width: 0; }
+.subject-info h4 { font-size: 15px; word-break: break-word; }
+.subject-info p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.row-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+/* ---------- Hábitos ---------- */
+.habit-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.habit-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.habit-top { display: flex; align-items: center; gap: 12px; }
+.habit-check {
+    width: 40px; height: 40px; border-radius: 6px; flex-shrink: 0;
+    border: 2px solid var(--border); background: #fff; color: transparent; font-size: 20px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.habit-check:hover { border-color: var(--green); }
+.habit-check.done { background: var(--green); border-color: var(--green); color: #fff; }
+.habit-check.off { opacity: 0.4; cursor: not-allowed; }
+.habit-info { flex: 1; min-width: 0; }
+.habit-info h4 { font-size: 15px; word-break: break-word; }
+.habit-info p { font-size: 12px; color: var(--muted); }
+.habit-side { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.streak { font-size: 13px; font-weight: 700; color: #C2410C; background: #FFEDD5; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.streak.zero { background: #F3F4F6; color: #9CA3AF; }
+
+.week-strip { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.wk { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; color: var(--muted); }
+.wk i { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); font-style: normal; font-size: 11px; color: #fff; display: flex; align-items: center; justify-content: center; }
+.wk.done i { background: var(--green); border-color: var(--green); }
+.wk.miss i { border-color: #FCA5A5; background: #FEF2F2; }
+.wk.off i { opacity: 0.35; border-style: dashed; }
+.wk.today i { border-color: var(--primary); }
+
+.day-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.day-chip { padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; background: #fff; font-size: 13px; cursor: pointer; }
+.day-chip.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+/* ---------- Metas ---------- */
+.meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.meta-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.meta-card.done-meta { background: #F9FAFB; }
+.meta-card h4 { font-size: 16px; word-break: break-word; }
+.meta-card .desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.meta-progress { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.meta-progress .progress-bar-bg { flex: 1; }
+.meta-progress .pct { font-size: 13px; font-weight: 700; min-width: 38px; text-align: right; }
+.meta-actions { display: flex; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); flex-wrap: wrap; align-items: center; }
+.meta-actions .spacer { flex: 1; }
+
+/* ---------- Barras de progresso / bem-estar ---------- */
+.progress-bar-bg { height: 10px; background: #E5E7EB; border-radius: 5px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--primary); }
+
+.wellness-container { display: flex; flex-direction: column; gap: 12px; }
+.wellness-row { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.wellness-icon-bg { font-size: 28px; width: 48px; text-align: center; }
+.wellness-details { flex: 1; }
+.wellness-details h3 { font-size: 16px; }
+.wellness-details p { font-size: 13px; color: var(--muted); margin: 2px 0 8px; }
+
+/* ---------- Configurações ---------- */
+.settings-section { margin-bottom: 22px; }
+.settings-section h3 { font-size: 13px; text-transform: uppercase; color: var(--primary); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.setting-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 14px; }
+.setting-row select { width: 220px; }
+.settings-footer { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; }
+
+/* ---------- Chat ---------- */
+#screen-aya { max-width: 720px; margin: 0 auto; }
+.chat-container { display: flex; flex-direction: column; height: calc(100vh - 150px); min-height: 420px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.chat-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.aya-avatar { width: 40px; height: 40px; border-radius: 50%; background: #FCE7F3; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.chat-header-info h3 { font-size: 16px; }
+.chat-header-info p { font-size: 12px; color: var(--green); }
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: #F9FAFB; }
+.message { max-width: 80%; }
+.message.aya { align-self: flex-start; }
+.message.user { align-self: flex-end; }
+.msg-bubble { padding: 9px 13px; border-radius: 8px; font-size: 14px; word-break: break-word; }
+.message.aya .msg-bubble { background: #fff; border: 1px solid var(--border); }
+.message.user .msg-bubble { background: var(--primary); color: #fff; }
+.typing-bar { display: none; padding: 6px 16px; font-size: 12px; color: var(--muted); font-style: italic; border-top: 1px solid var(--border); background: #F9FAFB; }
+.aya-typing .typing-bar { display: block; }
+.chat-input-area { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); }
+
+/* ---------- Modais e avisos ---------- */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, 0.4); align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.open { display: flex; }
+.modal { width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; background: #fff; border-radius: 8px; padding: 22px; border: 1px solid var(--border); }
+.modal h2 { font-size: 20px; color: var(--primary-dark); }
+.modal .sub { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+#toast-wrap { position: fixed; top: 70px; right: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; }
+.toast { background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--green); border-radius: 6px; padding: 10px 14px; font-size: 14px; max-width: 320px; }
+.toast.err { border-left-color: var(--red); }
+
+/* ---------- Easter egg: Modo Turbo (versão simples) ---------- */
+@keyframes turboHue { to { filter: hue-rotate(360deg); } }
+body.turbo-active .container, body.turbo-active .top-navbar { animation: turboHue 2s linear infinite; }
+body.turbo-active::after {
+    content: 'MODO TURBO'; position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%);
+    background: var(--pink); color: #fff; font-weight: 700; padding: 6px 16px; border-radius: 16px; z-index: 70;
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 800px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .dashboard-grid, .habit-list, .meta-grid, .form-grid { grid-template-columns: 1fr; }
+    .subject-row { flex-direction: column; align-items: flex-start; }
+    .wellness-row { flex-wrap: wrap; }
+    .setting-row { flex-direction: column; align-items: flex-start; }
+    .setting-row select { width: 100%; }
+}
+
+</style>
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR -->
+    <header class="top-navbar" id="navbar">
+        <div class="brand" onclick="navTo('screen-menu', 'nav-dashboard')">Flow <span>Agendas</span></div>
+
+        <nav class="nav-links hidden" id="nav-links">
+            <button class="nav-btn" id="nav-dashboard" onclick="navTo('screen-menu', 'nav-dashboard')">Dashboard</button>
+            <button class="nav-btn" id="nav-tarefas" onclick="navTo('screen-tarefas', 'nav-tarefas')">Tarefas</button>
+            <button class="nav-btn" id="nav-habitos" onclick="navTo('screen-habitos', 'nav-habitos')">Hábitos</button>
+            <button class="nav-btn" id="nav-metas" onclick="navTo('screen-metas', 'nav-metas')">Metas</button>
+            <button class="nav-btn" id="nav-bemestar" onclick="navTo('screen-bemestar', 'nav-bemestar')">Bem-estar</button>
+            <button class="nav-btn" id="nav-aya" onclick="navTo('screen-aya', 'nav-aya')">Aya</button>
+            <button class="nav-btn" id="nav-config" onclick="navTo('screen-config', 'nav-config')">Config.</button>
+        </nav>
+
+        <div class="user-profile hidden" id="user-area" onclick="navTo('screen-config', 'nav-config')">
+            <span id="display-username">Aluno</span>
+            <div class="avatar" id="avatar-letter">A</div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- LOGIN -->
+        <section id="screen-login" class="screen active">
+            <div class="card">
+                <h2>Flow Agendas</h2>
+                <p class="sub">Entre para acessar suas tarefas, hábitos e metas.</p>
+                <form onsubmit="event.preventDefault(); doLogin();">
+                    <div class="input-group">
+                        <label for="login-email">E-mail</label>
+                        <input type="email" id="login-email" placeholder="voce@email.com" autocomplete="email">
+                    </div>
+                    <div class="input-group">
+                        <label for="login-pass">Senha</label>
+                        <input type="password" id="login-pass" autocomplete="current-password">
+                    </div>
+                    <button class="btn btn-block" type="submit">Entrar</button>
+                </form>
+                <p class="auth-switch">Não tem conta? <button class="link-btn" onclick="navTo('screen-cadastro')">Criar conta</button></p>
+            </div>
+        </section>
+
+        <!-- CADASTRO -->
+        <section id="screen-cadastro" class="screen">
+            <div class="page-header"><div><h1>Criar conta</h1><p>Dados do estudante, instituição e curso.</p></div></div>
+            <div class="card">
+                <form onsubmit="event.preventDefault(); doCadastro();">
+                    <div class="form-grid">
+                        <div class="form-section-title">Você</div>
+                        <div class="input-group full"><label for="cad-nome">Nome completo</label><input type="text" id="cad-nome" maxlength="150" required></div>
+                        <div class="input-group"><label for="cad-email">E-mail</label><input type="email" id="cad-email" maxlength="150" required autocomplete="email"></div>
+                        <div class="input-group"><label for="cad-senha">Senha (mín. 6 caracteres)</label><input type="password" id="cad-senha" minlength="6" required autocomplete="new-password"></div>
+                        <div class="input-group"><label for="cad-nasc">Data de nascimento</label><input type="date" id="cad-nasc" required></div>
+                        <div class="input-group">
+                            <label for="cad-ano">Ano escolar</label>
+                            <select id="cad-ano"><option value="1_ano">1º ano</option><option value="2_ano">2º ano</option><option value="3_ano">3º ano</option></select>
+                        </div>
+                        <div class="input-group">
+                            <label for="cad-turno-escolar">Turno escolar</label>
+                            <select id="cad-turno-escolar"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select>
+                        </div>
+
+                        <div class="form-section-title">Instituição</div>
+                        <div class="input-group full"><label for="cad-inst">Nome da instituição</label><input type="text" id="cad-inst" maxlength="150" required></div>
+                        <div class="input-group">
+                            <label for="cad-inst-tipo">Tipo</label>
+                            <select id="cad-inst-tipo"><option value="escola">Escola</option><option value="empresa">Empresa</option><option value="ong">ONG</option><option value="outro">Outro</option></select>
+                        </div>
+                        <div class="input-group"><label for="cad-cidade">Cidade</label><input type="text" id="cad-cidade" maxlength="100" required></div>
+                        <div class="input-group"><label for="cad-uf">UF</label><input type="text" id="cad-uf" maxlength="2" placeholder="PR" required style="text-transform:uppercase"></div>
+
+                        <div class="form-section-title">Curso</div>
+                        <div class="input-group full"><label for="cad-curso">Nome do curso</label><input type="text" id="cad-curso" maxlength="150" required></div>
+                        <div class="input-group">
+                            <label for="cad-curso-turno">Turno do curso</label>
+                            <select id="cad-curso-turno"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option><option value="integral">Integral</option></select>
+                        </div>
+                        <div class="input-group"><label for="cad-curso-duracao">Duração (semestres)</label><input type="number" id="cad-curso-duracao" min="1" max="20" value="6" required></div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-ghost" onclick="navTo('screen-login')">Voltar</button>
+                        <button type="submit" class="btn">Criar conta</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- DASHBOARD -->
+        <section id="screen-menu" class="screen">
+            <div class="page-header">
+                <div><h1>Visão Geral</h1><p id="greeting-text">O que vamos fazer hoje?</p></div>
+                <div class="header-actions">
+                    <button class="btn btn-sm" onclick="openTarefa()">+ Tarefa</button>
+                    <button class="btn btn-sm btn-green" onclick="openHabito()">+ Hábito</button>
+                    <button class="btn btn-sm btn-pink" onclick="openMeta()">+ Meta</button>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card"><div class="num" id="stat-tarefas">0</div><div class="lbl" id="stat-tarefas-lbl">tarefas em aberto</div></div>
+                <div class="stat-card"><div class="num" id="stat-habitos">0/0</div><div class="lbl">hábitos de hoje</div></div>
+                <div class="stat-card"><div class="num" id="stat-metas">0</div><div class="lbl">metas ativas</div></div>
+                <div class="stat-card"><div class="num" id="stat-agua">0L</div><div class="lbl">água hoje (meta 2L)</div></div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="action-card" onclick="navTo('screen-tarefas', 'nav-tarefas')"><div class="action-icon">📋</div><div class="action-text"><h3>Tarefas</h3><p>Estudos, trabalho e compromissos</p></div></div>
+                <div class="action-card" onclick="navTo('screen-habitos', 'nav-habitos')"><div class="action-icon">🔥</div><div class="action-text"><h3>Hábitos</h3><p>Rotinas e sequências</p></div></div>
+                <div class="action-card" onclick="navTo('screen-metas', 'nav-metas')"><div class="action-icon">🎯</div><div class="action-text"><h3>Metas</h3><p>Objetivos com prazo</p></div></div>
+                <div class="action-card" onclick="navTo('screen-bemestar', 'nav-bemestar')"><div class="action-icon">🌱</div><div class="action-text"><h3>Bem-estar</h3><p>Água, sono e foco</p></div></div>
+                <div class="action-card" onclick="navTo('screen-aya', 'nav-aya')"><div class="action-icon">✨</div><div class="action-text"><h3>Aya</h3><p>Assistente de IA</p></div></div>
+                <div class="action-card" onclick="navTo('screen-config', 'nav-config')"><div class="action-icon">⚙️</div><div class="action-text"><h3>Configurações</h3><p>Perfil e curso</p></div></div>
+            </div>
+        </section>
+
+        <!-- TAREFAS -->
+        <section id="screen-tarefas" class="screen">
+            <div class="page-header">
+                <div><h1>Tarefas</h1><p>Clique no status para avançar: Pendente → Em andamento → Concluído.</p></div>
+                <div class="header-actions"><button class="btn" onclick="openTarefa()">+ Nova tarefa</button></div>
+            </div>
+            <div class="study-filters">
+                <button class="filter-pill active" id="f-aberto" onclick="filterTarefas('aberto')">Em aberto</button>
+                <button class="filter-pill" id="f-concluido" onclick="filterTarefas('concluido')">Concluídas</button>
+                <button class="filter-pill" id="f-cancelado" onclick="filterTarefas('cancelado')">Canceladas</button>
+            </div>
+            <div class="subject-list" id="subject-list"></div>
+        </section>
+
+        <!-- HÁBITOS -->
+        <section id="screen-habitos" class="screen">
+            <div class="page-header">
+                <div><h1>Hábitos</h1><p>Marque o que você fez hoje e mantenha a sequência.</p></div>
+                <div class="header-actions"><button class="btn btn-green" onclick="openHabito()">+ Novo hábito</button></div>
+            </div>
+            <div class="habit-list" id="habit-list"></div>
+        </section>
+
+        <!-- METAS -->
+        <section id="screen-metas" class="screen">
+            <div class="page-header">
+                <div><h1>Metas</h1><p>Vincule tarefas a uma meta e o progresso é calculado sozinho.</p></div>
+                <div class="header-actions"><button class="btn btn-pink" onclick="openMeta()">+ Nova meta</button></div>
+            </div>
+            <div class="meta-grid" id="meta-list"></div>
+        </section>
+
+        <!-- BEM-ESTAR -->
+        <section id="screen-bemestar" class="screen">
+            <div class="page-header"><div><h1>Bem-estar</h1><p>Registre água, sono e foco do dia.</p></div></div>
+            <div class="wellness-container">
+                <div class="wellness-row">
+                    <div class="wellness-icon-bg">💧</div>
+                    <div class="wellness-details">
+                        <h3>Hidratação</h3>
+                        <p id="water-text">Você bebeu 0L de uma meta de 2L</p>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="water-bar" style="width:0%; background:#06B6D4"></div></div>
+                    </div>
+                    <button class="btn" onclick="addWater()">+ 250ml</button>
+                </div>
+                <div class="wellness-row">
+                    <div class="wellness-icon-bg">🌙</div>
+                    <div class="wellness-details">
+                        <h3>Sono</h3>
+                        <p id="sleep-text">Você dormiu 0h de uma meta de 8h</p>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="sleep-bar" style="width:0%; background:#DB2777"></div></div>
+                    </div>
+                    <button class="btn btn-pink" onclick="addSleep()">+ 1h</button>
+                </div>
+                <div class="wellness-row">
+                    <div class="wellness-icon-bg">🧘</div>
+                    <div class="wellness-details">
+                        <h3>Foco / Meditação</h3>
+                        <p id="focus-text">Pressione iniciar para focar por 5 minutos.</p>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="focus-bar" style="width:0%; background:#059669"></div></div>
+                    </div>
+                    <button class="btn btn-green" id="btn-focus" onclick="toggleFocus()">Iniciar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONFIGURAÇÕES -->
+        <section id="screen-config" class="screen">
+            <div class="page-header"><div><h1>Configurações</h1><p>Gerencie sua conta.</p></div></div>
+            <div class="card">
+                <div class="settings-section">
+                    <h3>Perfil do estudante</h3>
+                    <div class="form-grid">
+                        <div class="input-group full"><label for="config-name">Nome de exibição</label><input type="text" id="config-name" maxlength="150" oninput="updateName(this.value)"></div>
+                        <div class="input-group"><label for="config-email">E-mail</label><input type="text" id="config-email" readonly></div>
+                        <div class="input-group"><label for="config-inst">Instituição</label><input type="text" id="config-inst" readonly></div>
+                        <div class="input-group"><label for="config-curso">Curso</label><input type="text" id="config-curso" readonly></div>
+                        <div class="input-group">
+                            <label for="config-ano">Ano escolar</label>
+                            <select id="config-ano"><option value="1_ano">1º ano</option><option value="2_ano">2º ano</option><option value="3_ano">3º ano</option></select>
+                        </div>
+                        <div class="input-group">
+                            <label for="config-turno">Turno escolar</label>
+                            <select id="config-turno"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Preferências</h3>
+                    <div class="setting-row"><span>Tema</span><select><option>Claro (padrão)</option><option disabled>Escuro (em breve)</option></select></div>
+                    <div class="setting-row"><span>Idioma</span><select><option>Português (BR)</option><option>English</option></select></div>
+                    <p class="hint">Tema e idioma ainda não existem no banco de dados; são só visuais.</p>
+                </div>
+                <div class="settings-footer">
+                    <button class="btn btn-ghost" onclick="logout()">Sair da conta</button>
+                    <button class="btn" onclick="saveConfig()">Salvar alterações</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHAT AYA -->
+        <section id="screen-aya" class="screen">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="aya-avatar" id="aya-face">✨</div>
+                    <div class="chat-header-info"><h3>Aya</h3><p>Online</p></div>
+                </div>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="typing-bar" id="typing-bar">Aya está digitando…</div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Pergunte algo para a Aya..." onkeypress="handleEnter(event)" autocomplete="off">
+                    <button class="btn" onclick="sendMessage()">Enviar</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAIS -->
+    <div class="modal-overlay" id="modal-tarefa" onclick="if(event.target===this)closeModal('modal-tarefa')">
+        <div class="modal">
+            <h2>Nova tarefa</h2>
+            <p class="sub">Vira um compromisso na sua agenda.</p>
+            <form id="form-tarefa" onsubmit="event.preventDefault(); saveTarefa();">
+                <div class="input-group"><label for="tarefa-titulo">Título</label><input type="text" id="tarefa-titulo" maxlength="150" placeholder="Ex: Revisar Ciências" required></div>
+                <div class="input-group"><label for="tarefa-descricao">Descrição (opcional)</label><textarea id="tarefa-descricao" rows="2"></textarea></div>
+                <div class="form-grid">
+                    <div class="input-group"><label for="tarefa-categoria">Categoria</label><select id="tarefa-categoria"></select></div>
+                    <div class="input-group">
+                        <label for="tarefa-prioridade">Prioridade</label>
+                        <select id="tarefa-prioridade"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select>
+                    </div>
+                    <div class="input-group"><label for="tarefa-inicio">Início</label><input type="datetime-local" id="tarefa-inicio" required></div>
+                    <div class="input-group"><label for="tarefa-fim">Fim</label><input type="datetime-local" id="tarefa-fim" required></div>
+                    <div class="input-group"><label for="tarefa-local">Local (opcional)</label><input type="text" id="tarefa-local" maxlength="150"></div>
+                    <div class="input-group"><label for="tarefa-meta">Vincular a uma meta</label><select id="tarefa-meta"></select></div>
+                </div>
+                <label class="check-line"><input type="checkbox" id="tarefa-dia-inteiro"> Dia inteiro (usa só as datas)</label>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-tarefa')">Cancelar</button>
+                    <button type="submit" class="btn">Salvar tarefa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-habito" onclick="if(event.target===this)closeModal('modal-habito')">
+        <div class="modal">
+            <h2>Novo hábito</h2>
+            <p class="sub">Uma rotina que se repete, com check-in diário.</p>
+            <form id="form-habito" onsubmit="event.preventDefault(); saveHabito();">
+                <div class="input-group"><label for="habito-titulo">Nome do hábito</label><input type="text" id="habito-titulo" maxlength="150" placeholder="Ex: Ler 20 minutos" required></div>
+                <div class="input-group"><label for="habito-descricao">Descrição (opcional)</label><input type="text" id="habito-descricao" maxlength="150"></div>
+                <div class="form-grid">
+                    <div class="input-group"><label for="habito-categoria">Categoria</label><select id="habito-categoria"></select></div>
+                    <div class="input-group">
+                        <label for="habito-tipo">Frequência</label>
+                        <select id="habito-tipo" onchange="toggleDiasHabito()"><option value="diaria">Todos os dias</option><option value="semanal">Dias da semana</option></select>
+                    </div>
+                </div>
+                <div class="input-group hidden" id="habito-dias-wrap">
+                    <label>Quais dias?</label>
+                    <div class="day-chips" id="habito-dias">
+                        <button type="button" class="day-chip" data-d="1" onclick="this.classList.toggle('on')">Seg</button>
+                        <button type="button" class="day-chip" data-d="2" onclick="this.classList.toggle('on')">Ter</button>
+                        <button type="button" class="day-chip" data-d="3" onclick="this.classList.toggle('on')">Qua</button>
+                        <button type="button" class="day-chip" data-d="4" onclick="this.classList.toggle('on')">Qui</button>
+                        <button type="button" class="day-chip" data-d="5" onclick="this.classList.toggle('on')">Sex</button>
+                        <button type="button" class="day-chip" data-d="6" onclick="this.classList.toggle('on')">Sáb</button>
+                        <button type="button" class="day-chip" data-d="7" onclick="this.classList.toggle('on')">Dom</button>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-habito')">Cancelar</button>
+                    <button type="submit" class="btn btn-green">Salvar hábito</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-meta" onclick="if(event.target===this)closeModal('modal-meta')">
+        <div class="modal">
+            <h2>Nova meta</h2>
+            <p class="sub">Defina o objetivo; depois vincule tarefas a ele.</p>
+            <form id="form-meta" onsubmit="event.preventDefault(); saveMeta();">
+                <div class="input-group"><label for="meta-titulo">Meta</label><input type="text" id="meta-titulo" maxlength="150" placeholder="Ex: Passar em Matemática" required></div>
+                <div class="input-group"><label for="meta-descricao">Descrição (opcional)</label><textarea id="meta-descricao" rows="2"></textarea></div>
+                <div class="input-group"><label for="meta-prazo">Prazo (opcional)</label><input type="date" id="meta-prazo"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-meta')">Cancelar</button>
+                    <button type="submit" class="btn btn-pink">Salvar meta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-wrap"></div>
+
+    <script>
+/* =====================================================================
+   Flow Agendas — protótipo
+   CAMADA DE DADOS: espelha o schema PostgreSQL (mesmos nomes de tabela e
+   coluna). Hoje persiste em localStorage; para ligar a um backend, troque
+   apenas as funções do objeto DB por chamadas à API.
+
+   Mapa tela → tabelas
+     Login/Cadastro → instituicao, curso, estudante
+     Tarefas        → compromisso (+ categoria, meta)
+     Hábitos        → compromisso + recorrencia + recorrencia_dia + habito_checkin (nova)
+     Metas          → meta (nova) + compromisso.id_meta (nova)
+     Água           → hábito "Beber água" + habito_checkin.quantidade
+     Sono / Foco    → compromisso + bloco_descompressao (tipo 'sono' / 'offline')
+     Chat da Aya    → conversa + mensagem (risco_detectado)
+   ===================================================================== */
+
+const PK = {
+    instituicao: 'id_instituicao', curso: 'id_curso', estudante: 'id_estudante', categoria: 'id_categoria',
+    compromisso: 'id_compromisso', recorrencia: 'id_recorrencia', bloco_descompressao: 'id_bloco',
+    conversa: 'id_conversa', mensagem: 'id_mensagem', meta: 'id_meta', habito_checkin: 'id_checkin'
+};
+const TABLES = Object.keys(PK).concat(['recorrencia_dia']);
+
+const DB = {
+    KEY: 'flow_agendas_db_v2', d: null,
+    init() {
+        let raw = null;
+        try { raw = localStorage.getItem(this.KEY); } catch (e) {}
+        try { this.d = raw ? JSON.parse(raw) : null; } catch (e) { this.d = null; }
+        if (!this.d) this.d = { seq: {}, session: null };
+        TABLES.forEach(t => { if (!this.d[t]) this.d[t] = []; });
+        if (!this.d.categoria.length) {
+            [['Estudo', '#4F46E5', 4], ['Trabalho', '#0EA5E9', 5], ['Lazer', '#EC4899', 1],
+             ['Saúde', '#10B981', 2], ['Descompressão', '#8B5CF6', 1], ['Pessoal', '#F59E0B', 3]]
+                .forEach(([nome, cor, peso]) => this.insert('categoria', { nome, cor_hex: cor, peso_energia: peso, padrao_sistema: true }));
+        }
+        this.save();
+    },
+    save() { try { localStorage.setItem(this.KEY, JSON.stringify(this.d)); } catch (e) {} },
+    insert(t, row) {
+        const pk = PK[t];
+        if (pk) { this.d.seq[t] = (this.d.seq[t] || 0) + 1; row[pk] = this.d.seq[t]; }
+        this.d[t].push(row); this.save(); return row;
+    },
+    where(t, fn) { return this.d[t].filter(fn); },
+    find(t, fn) { return this.d[t].find(fn); },
+    get(t, id) { return this.d[t].find(r => r[PK[t]] === id); },
+    update(t, id, patch) { const r = this.get(t, id); if (r) { Object.assign(r, patch); this.save(); } return r; },
+    _drop(t, fn) { this.d[t] = this.d[t].filter(r => !fn(r)); },
+    remove(t, id) {
+        if (t === 'compromisso') {
+            this.where('recorrencia', r => r.id_compromisso === id).forEach(r => this._drop('recorrencia_dia', x => x.id_recorrencia === r.id_recorrencia));
+            this._drop('recorrencia', r => r.id_compromisso === id);
+            this._drop('bloco_descompressao', b => b.id_compromisso === id);
+            this._drop('habito_checkin', k => k.id_compromisso === id);
+        }
+        if (t === 'meta') this.where('compromisso', c => c.id_meta === id).forEach(c => { c.id_meta = null; }); // ON DELETE SET NULL
+        if (t === 'conversa') this._drop('mensagem', m => m.id_conversa === id);
+        this._drop(t, r => r[PK[t]] === id);
+        this.save();
+    }
+};
+
+/* ================= UTILITÁRIOS ================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const fmtTs = d => `${fmtDate(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+const toInput = d => `${fmtDate(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const todayStr = () => fmtDate(new Date());
+const isoDow = d => (d.getDay() === 0 ? 7 : d.getDay());
+const DIAS = ['', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+const WATER_TITLE = 'Beber água (meta diária)';
+
+function toast(msg, type) {
+    const t = document.createElement('div');
+    t.className = 'toast' + (type === 'err' ? ' err' : '');
+    t.textContent = msg;
+    $('toast-wrap').appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+}
+
+async function sha256(txt) {
+    try {
+        if (window.crypto && crypto.subtle) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+    } catch (e) {}
+    let h = 5381; for (const c of txt) h = ((h << 5) + h + c.charCodeAt(0)) >>> 0;
+    return 'weak-' + h.toString(16);
+}
+
+/* ================= ESTADO ================= */
+let state = {
+    user: null,            // linha de `estudante`
+    conversa: null,        // linha de `conversa`
+    focusTime: 0, focusSaved: 0, focusInterval: null, isFocusing: false,
+    tarefaFilter: 'aberto'
+};
+const uid = () => state.user.id_estudante;
+const catById = id => DB.get('categoria', id);
+const catByName = nome => DB.find('categoria', c => c.nome === nome);
+const isHabit = c => !!DB.find('recorrencia', r => r.id_compromisso === c.id_compromisso);
+const isBloco = c => !!DB.find('bloco_descompressao', b => b.id_compromisso === c.id_compromisso);
+
+/* ================= NAVEGAÇÃO ================= */
+const SCREEN_RENDER = {
+    'screen-menu': () => renderDashboard(), 'screen-tarefas': () => renderTarefas(), 'screen-habitos': () => renderHabitos(),
+    'screen-metas': () => renderMetas(), 'screen-bemestar': () => renderBemestar(), 'screen-config': () => renderConfig()
+};
+
+function navTo(screenId, navId) {
+    const isPublic = (screenId === 'screen-login' || screenId === 'screen-cadastro');
+    if (!state.user && !isPublic) { screenId = 'screen-login'; navId = null; }
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = $(screenId);
+    if (target) {
+        if (SCREEN_RENDER[screenId]) SCREEN_RENDER[screenId]();
+        target.classList.add('active');
+    }
+
+    const navLinks = $('nav-links'), userArea = $('user-area');
+    if (isPublic) {
+        navLinks.classList.add('hidden'); userArea.classList.add('hidden');
+    } else {
+        navLinks.classList.remove('hidden'); userArea.classList.remove('hidden');
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        if (navId) $(navId).classList.add('active');
+    }
+
+    if (screenId === 'screen-aya') {
+        const chatBox = $('chat-messages');
+        setTimeout(() => chatBox.scrollTop = chatBox.scrollHeight, 50);
+    }
+    window.scrollTo(0, 0);
+}
+
+/* ================= LOGIN / CADASTRO / SESSÃO ================= */
+async function doLogin() {
+    const email = $('login-email').value.trim().toLowerCase();
+    const pass = $('login-pass').value;
+    if (!email || !pass) { toast('Informe e-mail e senha.', 'err'); return; }
+    const u = DB.find('estudante', e => e.email === email);
+    const hash = await sha256(pass);
+    if (!u || u.senha_hash !== hash) { toast('E-mail ou senha incorretos.', 'err'); return; }
+    $('login-pass').value = '';
+    startSession(u);
+}
+
+async function doCadastro() {
+    const v = id => $(id).value.trim();
+    const nome = v('cad-nome'), email = v('cad-email').toLowerCase(), senha = $('cad-senha').value, nasc = $('cad-nasc').value;
+    const inst = v('cad-inst'), cidade = v('cad-cidade'), uf = v('cad-uf').toUpperCase(), curso = v('cad-curso');
+    const dur = parseInt($('cad-curso-duracao').value, 10);
+
+    if (!nome || !email || !senha || !nasc || !inst || !cidade || !uf || !curso) { toast('Preencha todos os campos.', 'err'); return; }
+    if (!/^\S+@\S+\.\S+$/.test(email)) { toast('E-mail inválido.', 'err'); return; }
+    if (senha.length < 6) { toast('A senha precisa ter ao menos 6 caracteres.', 'err'); return; }
+    if (!/^[A-Z]{2}$/.test(uf)) { toast('UF deve ter 2 letras (ex: PR).', 'err'); return; }
+    if (!(dur > 0)) { toast('A duração do curso deve ser maior que zero.', 'err'); return; }
+    const lim = new Date(); lim.setFullYear(lim.getFullYear() - 14);          // ck_estudante_idade
+    if (new Date(nasc + 'T00:00:00') > lim) { toast('É preciso ter pelo menos 14 anos.', 'err'); return; }
+    if (DB.find('estudante', e => e.email === email)) { toast('Este e-mail já está cadastrado.', 'err'); return; } // uq_estudante_email
+
+    let i = DB.find('instituicao', x => x.nome.toLowerCase() === inst.toLowerCase() && x.cidade.toLowerCase() === cidade.toLowerCase() && x.uf === uf); // uq_instituicao
+    if (!i) i = DB.insert('instituicao', { nome: inst, tipo: $('cad-inst-tipo').value, cidade, uf, criado_em: fmtTs(new Date()) });
+    const turnoCurso = $('cad-curso-turno').value;
+    let c = DB.find('curso', x => x.id_instituicao === i.id_instituicao && x.nome.toLowerCase() === curso.toLowerCase() && x.turno === turnoCurso); // uq_curso
+    if (!c) c = DB.insert('curso', { id_instituicao: i.id_instituicao, nome: curso, turno: turnoCurso, duracao_semestres: dur });
+
+    const u = DB.insert('estudante', {
+        id_instituicao: i.id_instituicao, id_curso: c.id_curso, nome, data_nascimento: nasc, email,
+        senha_hash: await sha256(senha), ano_escolar: $('cad-ano').value, turno_escolar: $('cad-turno-escolar').value,
+        criado_em: fmtTs(new Date())
+    });
+    toast('Conta criada! Bem-vindo(a) ao Flow.');
+    startSession(u);
+}
+
+function startSession(u) {
+    state.user = u;
+    DB.d.session = u.id_estudante; DB.save();
+    $('display-username').innerText = u.nome;
+    $('avatar-letter').innerText = u.nome.charAt(0).toUpperCase();
+    loadConversa();
+    navTo('screen-menu', 'nav-dashboard');
+}
+
+function logout() {
+    if (state.conversa) { DB.update('conversa', state.conversa.id_conversa, { encerrada_em: fmtTs(new Date()) }); }
+    if (state.isFocusing) { clearInterval(state.focusInterval); state.isFocusing = false; saveFocus(); }
+    state.user = null; state.conversa = null; state.focusTime = 0; state.focusSaved = 0;
+    DB.d.session = null; DB.save();
+    navTo('screen-login');
+}
+
+function updateName(newName) {
+    if (newName.trim() === '' || !state.user) return;
+    state.user = DB.update('estudante', uid(), { nome: newName.trim() });
+    $('display-username').innerText = state.user.nome;
+    $('avatar-letter').innerText = state.user.nome.charAt(0).toUpperCase();
+    $('greeting-text').innerText = `O que vamos fazer hoje, ${state.user.nome}?`;
+}
+
+function renderConfig() {
+    const u = state.user;
+    $('config-name').value = u.nome;
+    $('config-email').value = u.email;
+    const i = DB.get('instituicao', u.id_instituicao), c = DB.get('curso', u.id_curso);
+    $('config-inst').value = i ? `${i.nome} — ${i.cidade}/${i.uf}` : '';
+    $('config-curso').value = c ? `${c.nome} (${c.turno}, ${c.duracao_semestres} sem.)` : '';
+    $('config-ano').value = u.ano_escolar;
+    $('config-turno').value = u.turno_escolar;
+}
+
+function saveConfig() {
+    state.user = DB.update('estudante', uid(), { ano_escolar: $('config-ano').value, turno_escolar: $('config-turno').value });
+    toast('Configurações salvas!');
+}
+
+/* ================= MODAIS ================= */
+function openModal(id) { $(id).classList.add('open'); const f = $(id).querySelector('input[type=text]'); if (f) f.focus(); }
+function closeModal(id) { $(id).classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
+
+function fillCategorias(selId, preferida) {
+    $(selId).innerHTML = DB.d.categoria.map(c => `<option value="${c.id_categoria}" ${c.nome === preferida ? 'selected' : ''}>${esc(c.nome)}</option>`).join('');
+}
+
+/* ================= TAREFAS (compromisso) ================= */
+function minhasTarefas() {
+    return DB.where('compromisso', c => c.id_estudante === uid() && !isHabit(c) && !isBloco(c));
+}
+
+function openTarefa(idMeta) {
+    $('form-tarefa').reset();
+    fillCategorias('tarefa-categoria', 'Estudo');
+    const metas = DB.where('meta', m => m.id_estudante === uid() && m.status === 'ativa');
+    $('tarefa-meta').innerHTML = '<option value="">— nenhuma —</option>' + metas.map(m => `<option value="${m.id_meta}" ${m.id_meta === idMeta ? 'selected' : ''}>${esc(m.titulo)}</option>`).join('');
+    const a = new Date(); a.setMinutes(0, 0, 0); a.setHours(a.getHours() + 1);
+    const b = new Date(a); b.setHours(b.getHours() + 1);
+    $('tarefa-inicio').value = toInput(a); $('tarefa-fim').value = toInput(b);
+    openModal('modal-tarefa');
+}
+
+function saveTarefa() {
+    const titulo = $('tarefa-titulo').value.trim();
+    if (!titulo) { toast('Dê um título à tarefa.', 'err'); return; }
+    const a = new Date($('tarefa-inicio').value), b = new Date($('tarefa-fim').value);
+    if (isNaN(a) || isNaN(b)) { toast('Informe início e fim.', 'err'); return; }
+    if ($('tarefa-dia-inteiro').checked) { a.setHours(0, 0, 0, 0); b.setHours(23, 59, 59, 0); }
+    if (!(b > a)) { toast('O fim precisa ser depois do início.', 'err'); return; }   // ck_compromisso_periodo
+    const idMeta = parseInt($('tarefa-meta').value, 10) || null;
+    DB.insert('compromisso', {
+        id_estudante: uid(), id_categoria: parseInt($('tarefa-categoria').value, 10), id_semana: null, id_meta: idMeta,
+        titulo, descricao: $('tarefa-descricao').value.trim() || null,
+        data_inicio: fmtTs(a), data_fim: fmtTs(b), dia_inteiro: $('tarefa-dia-inteiro').checked,
+        local: $('tarefa-local').value.trim() || null, prioridade: $('tarefa-prioridade').value,
+        status: 'pendente', origem: 'manual', criado_em: fmtTs(new Date())
+    });
+    closeModal('modal-tarefa'); toast('Tarefa adicionada!');
+    refreshAfterChange();
+}
+
+const STATUS_LABEL = { pendente: 'Pendente', em_andamento: 'Em andamento', concluido: 'Concluído ✓', cancelado: 'Cancelado' };
+const STATUS_CLASS = { pendente: 'status-pendente', em_andamento: 'status-andamento', concluido: 'status-concluido', cancelado: 'status-cancelado' };
+const STATUS_NEXT = { pendente: 'em_andamento', em_andamento: 'concluido', concluido: 'pendente' };
+
+function fmtRange(c) {
+    const a = new Date(c.data_inicio), b = new Date(c.data_fim);
+    const d = a.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
+    if (c.dia_inteiro) return d + ' · dia inteiro';
+    const t = x => x.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    if (fmtDate(a) === fmtDate(b)) return `${d} · ${t(a)}–${t(b)}`;
+    return `${d} ${t(a)} → ${b.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} ${t(b)}`;
+}
+
+function renderTarefas() {
+    const list = $('subject-list');
+    const f = state.tarefaFilter;
+    const rows = minhasTarefas().filter(c => f === 'aberto' ? (c.status === 'pendente' || c.status === 'em_andamento') : c.status === f);
+    rows.sort((x, y) => f === 'aberto' ? x.data_inicio.localeCompare(y.data_inicio) : y.data_inicio.localeCompare(x.data_inicio));
+
+    if (!rows.length) {
+        const msg = { aberto: 'Nenhuma tarefa em aberto.', concluido: 'Nada concluído ainda.', cancelado: 'Nenhuma tarefa cancelada.' }[f];
+        list.innerHTML = `<div class="empty-state"><p>${msg}</p>${f === 'aberto' ? '<button class="btn" onclick="openTarefa()">+ Nova tarefa</button>' : ''}</div>`;
+        return;
+    }
+    const now = new Date();
+    list.innerHTML = rows.map(c => {
+        const cat = catById(c.id_categoria) || { nome: '?', cor_hex: '#94A3B8' };
+        const meta = c.id_meta ? DB.get('meta', c.id_meta) : null;
+        const done = c.status === 'concluido', cancel = c.status === 'cancelado';
+        const late = (c.status === 'pendente' || c.status === 'em_andamento') && new Date(c.data_fim) < now;
+        return `
+        <div class="subject-row" style="--cat:${cat.cor_hex}">
+            <div class="subject-info">
+                <h4 style="${done || cancel ? 'text-decoration: line-through; color: #9CA3AF;' : ''}">${esc(c.titulo)}</h4>
+                <p>${esc(fmtRange(c))}${c.local ? ' · ' + esc(c.local) : ''}</p>
+                ${c.descricao ? `<p>${esc(c.descricao)}</p>` : ''}
+                <div class="meta-chips">
+                    <span class="chip"><span class="dotc" style="background:${cat.cor_hex}"></span>${esc(cat.nome)}</span>
+                    <span class="prio prio-${c.prioridade}">${c.prioridade}</span>
+                    ${meta ? `<span class="chip">Meta: ${esc(meta.titulo)}</span>` : ''}
+                    ${late ? '<span class="chip late">atrasada</span>' : ''}
+                </div>
+            </div>
+            <div class="row-actions">
+                ${cancel ? `<span class="status-badge ${STATUS_CLASS.cancelado}" onclick="setTarefaStatus(${c.id_compromisso}, 'pendente')">Reativar</span>`
+                         : `<span class="status-badge ${STATUS_CLASS[c.status]}" onclick="cycleTarefa(${c.id_compromisso})">${STATUS_LABEL[c.status]}</span>
+                            <button class="icon-btn" title="Cancelar" onclick="setTarefaStatus(${c.id_compromisso}, 'cancelado')">⊘</button>`}
+                <button class="icon-btn del" title="Excluir" onclick="deleteTarefa(${c.id_compromisso})">🗑</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function cycleTarefa(id) { const c = DB.get('compromisso', id); if (c && STATUS_NEXT[c.status]) setTarefaStatus(id, STATUS_NEXT[c.status]); }
+function setTarefaStatus(id, st) { DB.update('compromisso', id, { status: st }); refreshAfterChange(); }
+function deleteTarefa(id) { if (confirm('Excluir esta tarefa definitivamente?')) { DB.remove('compromisso', id); toast('Tarefa excluída.'); refreshAfterChange(); } }
+function filterTarefas(type) {
+    state.tarefaFilter = type;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    $('f-' + type).classList.add('active');
+    renderTarefas();
+}
+
+function refreshAfterChange() { renderDashboard(); renderTarefas(); renderMetas(); renderHabitos(); }
+
+/* ================= HÁBITOS (compromisso + recorrencia + habito_checkin) ================= */
+function meusHabitos() {
+    return DB.where('compromisso', c => c.id_estudante === uid() && c.status !== 'cancelado' && c.titulo !== WATER_TITLE && isHabit(c));
+}
+function habitDays(c) {
+    const r = DB.find('recorrencia', x => x.id_compromisso === c.id_compromisso);
+    if (!r || r.tipo === 'diaria') return [1, 2, 3, 4, 5, 6, 7];
+    return DB.where('recorrencia_dia', d => d.id_recorrencia === r.id_recorrencia).map(d => d.dia_semana);
+}
+const checkinOf = (c, dateStr) => DB.find('habito_checkin', k => k.id_compromisso === c.id_compromisso && k.data === dateStr);
+function streakOf(c) {
+    const days = habitDays(c); const d = new Date(); let n = 0;
+    for (let i = 0; i < 400; i++) {
+        if (days.includes(isoDow(d))) {
+            if (checkinOf(c, fmtDate(d))) n++; else if (i > 0) break;
+        }
+        d.setDate(d.getDate() - 1);
+    }
+    return n;
+}
+
+function openHabito() {
+    $('form-habito').reset();
+    fillCategorias('habito-categoria', 'Pessoal');
+    document.querySelectorAll('#habito-dias .day-chip').forEach(b => b.classList.remove('on'));
+    $('habito-dias-wrap').classList.add('hidden');
+    openModal('modal-habito');
+}
+function toggleDiasHabito() { $('habito-dias-wrap').classList.toggle('hidden', $('habito-tipo').value !== 'semanal'); }
+
+function criarHabitoBase(titulo, descricao, idCategoria, tipo, dias) {
+    const s = new Date(); s.setHours(0, 0, 0, 0);
+    const e = new Date(s); e.setHours(23, 59, 59, 0);
+    const c = DB.insert('compromisso', {
+        id_estudante: uid(), id_categoria: idCategoria, id_semana: null, id_meta: null, titulo, descricao,
+        data_inicio: fmtTs(s), data_fim: fmtTs(e), dia_inteiro: true, local: null, prioridade: 'media',
+        status: 'pendente', origem: 'recorrencia', criado_em: fmtTs(new Date())
+    });
+    const r = DB.insert('recorrencia', { id_compromisso: c.id_compromisso, tipo, intervalo: 1, data_fim: null, ocorrencias_geradas: 0 });
+    if (tipo === 'semanal') dias.forEach(d => DB.insert('recorrencia_dia', { id_recorrencia: r.id_recorrencia, dia_semana: d }));
+    return c;
+}
+
+function saveHabito() {
+    const titulo = $('habito-titulo').value.trim();
+    if (!titulo) { toast('Dê um nome ao hábito.', 'err'); return; }
+    const tipo = $('habito-tipo').value;
+    const dias = Array.from(document.querySelectorAll('#habito-dias .day-chip.on')).map(b => parseInt(b.dataset.d, 10));
+    if (tipo === 'semanal' && !dias.length) { toast('Escolha ao menos um dia da semana.', 'err'); return; }
+    criarHabitoBase(titulo, $('habito-descricao').value.trim() || null, parseInt($('habito-categoria').value, 10), tipo, dias);
+    closeModal('modal-habito'); toast('Hábito criado!');
+    renderHabitos(); renderDashboard();
+}
+
+function toggleCheckin(id) {
+    const c = DB.get('compromisso', id); if (!c) return;
+    const hoje = todayStr(), ex = checkinOf(c, hoje);
+    if (ex) DB.remove('habito_checkin', ex.id_checkin);
+    else DB.insert('habito_checkin', { id_compromisso: id, data: hoje, quantidade: 1, criado_em: fmtTs(new Date()) });
+    renderHabitos(); renderDashboard();
+}
+
+function deleteHabito(id) { if (confirm('Excluir este hábito e todo o histórico dele?')) { DB.remove('compromisso', id); toast('Hábito excluído.'); renderHabitos(); renderDashboard(); } }
+
+function renderHabitos() {
+    const list = $('habit-list');
+    const hs = meusHabitos();
+    if (!hs.length) {
+        list.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><p>Nenhum hábito ainda.</p><button class="btn btn-green" onclick="openHabito()">+ Novo hábito</button></div>`;
+        return;
+    }
+    const LET = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+    list.innerHTML = hs.map(c => {
+        const cat = catById(c.id_categoria) || { nome: '?', cor_hex: '#94A3B8' };
+        const rec = DB.find('recorrencia', r => r.id_compromisso === c.id_compromisso);
+        const days = habitDays(c);
+        const hoje = new Date(), hojeOn = days.includes(isoDow(hoje));
+        const done = !!checkinOf(c, fmtDate(hoje));
+        const st = streakOf(c);
+        const freq = rec && rec.tipo === 'semanal' ? days.map(d => DIAS[d]).join(' · ') : 'Todos os dias';
+        let strip = '';
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(); d.setDate(d.getDate() - i);
+            const on = days.includes(isoDow(d)), ck = !!checkinOf(c, fmtDate(d));
+            const cls = (ck ? 'done' : (on && i > 0 ? 'miss' : (on ? '' : 'off'))) + (i === 0 ? ' today' : '');
+            strip += `<div class="wk ${cls}"><i>${ck ? '✓' : ''}</i>${LET[d.getDay()]}</div>`;
+        }
+        return `
+        <div class="habit-card">
+            <div class="habit-top">
+                <div class="habit-check ${done ? 'done' : ''} ${hojeOn ? '' : 'off'}" ${hojeOn ? `onclick="toggleCheckin(${c.id_compromisso})"` : 'title="Hoje não é dia deste hábito"'}>✓</div>
+                <div class="habit-info">
+                    <h4>${esc(c.titulo)}</h4>
+                    <p>${esc(freq)}</p>
+                    <div class="meta-chips"><span class="chip"><span class="dotc" style="background:${cat.cor_hex}"></span>${esc(cat.nome)}</span></div>
+                </div>
+                <div class="habit-side">
+                    <span class="streak ${st ? '' : 'zero'}">${st} ${st === 1 ? 'dia' : 'dias'}</span>
+                    <button class="icon-btn del" title="Excluir" onclick="deleteHabito(${c.id_compromisso})">🗑</button>
+                </div>
+            </div>
+            <div class="week-strip">${strip}</div>
+        </div>`;
+    }).join('');
+}
+
+/* ================= METAS (meta) ================= */
+function metaProgress(m) {
+    const linked = DB.where('compromisso', c => c.id_meta === m.id_meta && c.status !== 'cancelado');
+    if (linked.length) {
+        const done = linked.filter(c => c.status === 'concluido').length;
+        return { pct: Math.round(done / linked.length * 100), auto: true, total: linked.length, done };
+    }
+    return { pct: m.progresso_manual, auto: false, total: 0, done: 0 };
+}
+
+function openMeta() { $('form-meta').reset(); openModal('modal-meta'); }
+
+function saveMeta() {
+    const titulo = $('meta-titulo').value.trim();
+    if (!titulo) { toast('Dê um nome à meta.', 'err'); return; }
+    DB.insert('meta', {
+        id_estudante: uid(), titulo, descricao: $('meta-descricao').value.trim() || null,
+        prazo: $('meta-prazo').value || null, progresso_manual: 0, status: 'ativa', criado_em: fmtTs(new Date())
+    });
+    closeModal('modal-meta'); toast('Meta criada!');
+    renderMetas(); renderDashboard();
+}
+
+function bumpMeta(id, delta) {
+    const m = DB.get('meta', id); if (!m) return;
+    DB.update('meta', id, { progresso_manual: Math.max(0, Math.min(100, m.progresso_manual + delta)) });
+    renderMetas();
+}
+function toggleMeta(id) {
+    const m = DB.get('meta', id); if (!m) return;
+    if (m.status === 'ativa') { DB.update('meta', id, { status: 'concluida', progresso_manual: 100 }); toast('Meta concluída! Parabéns!'); }
+    else DB.update('meta', id, { status: 'ativa' });
+    renderMetas(); renderDashboard();
+}
+function deleteMeta(id) { if (confirm('Excluir esta meta? As tarefas vinculadas continuam existindo.')) { DB.remove('meta', id); toast('Meta excluída.'); renderMetas(); renderDashboard(); renderTarefas(); } }
+
+function renderMetas() {
+    const list = $('meta-list');
+    const ms = DB.where('meta', m => m.id_estudante === uid() && m.status !== 'cancelada')
+        .sort((a, b) => (a.status === b.status ? (a.prazo || '9999').localeCompare(b.prazo || '9999') : (a.status === 'ativa' ? -1 : 1)));
+    if (!ms.length) {
+        list.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><p>Nenhuma meta ainda.</p><button class="btn btn-pink" onclick="openMeta()">+ Nova meta</button></div>`;
+        return;
+    }
+    list.innerHTML = ms.map(m => {
+        const p = metaProgress(m), fin = m.status === 'concluida';
+        let prazo = '';
+        if (m.prazo) {
+            const dias = Math.round((new Date(m.prazo + 'T00:00:00') - new Date(todayStr() + 'T00:00:00')) / 86400000);
+            const txt = fin ? m.prazo.split('-').reverse().join('/') : (dias < 0 ? `atrasada ${-dias}d` : dias === 0 ? 'vence hoje' : `faltam ${dias} dias`);
+            prazo = `<span class="chip ${!fin && dias < 0 ? 'late' : ''}">Prazo: ${txt}</span>`;
+        }
+        return `
+        <div class="meta-card ${fin ? 'done-meta' : ''}">
+            <h4>${esc(m.titulo)}</h4>
+            ${m.descricao ? `<p class="desc">${esc(m.descricao)}</p>` : ''}
+            <div class="meta-chips">${prazo}${p.auto ? `<span class="chip">${p.done}/${p.total} tarefas</span>` : '<span class="chip">progresso manual</span>'}${fin ? '<span class="chip">concluída</span>' : ''}</div>
+            <div class="meta-progress">
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p.pct}%"></div></div>
+                <span class="pct">${p.pct}%</span>
+            </div>
+            <div class="meta-actions">
+                ${!fin ? `<button class="mini-btn" onclick="openTarefa(${m.id_meta})">+ tarefa</button>` : ''}
+                ${!fin && !p.auto ? `<button class="mini-btn" onclick="bumpMeta(${m.id_meta}, -10)">−10%</button><button class="mini-btn" onclick="bumpMeta(${m.id_meta}, 10)">+10%</button>` : ''}
+                <span class="spacer"></span>
+                <button class="mini-btn ok" onclick="toggleMeta(${m.id_meta})">${fin ? 'Reabrir' : 'Concluir'}</button>
+                <button class="icon-btn del" title="Excluir" onclick="deleteMeta(${m.id_meta})">🗑</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+/* ================= DASHBOARD ================= */
+function renderDashboard() {
+    if (!state.user) return;
+    $('greeting-text').innerText = `O que vamos fazer hoje, ${state.user.nome}?`;
+    const abertas = minhasTarefas().filter(c => c.status === 'pendente' || c.status === 'em_andamento');
+    const hoje = abertas.filter(c => c.data_inicio.slice(0, 10) <= todayStr() && c.data_fim.slice(0, 10) >= todayStr()).length;
+    $('stat-tarefas').innerText = abertas.length;
+    $('stat-tarefas-lbl').innerText = `tarefas em aberto${hoje ? ` · ${hoje} hoje` : ''}`;
+    const hs = meusHabitos().filter(c => habitDays(c).includes(isoDow(new Date())));
+    $('stat-habitos').innerText = `${hs.filter(c => checkinOf(c, todayStr())).length}/${hs.length}`;
+    $('stat-metas').innerText = DB.where('meta', m => m.id_estudante === uid() && m.status === 'ativa').length;
+    $('stat-agua').innerText = `${waterToday() / 1000}L`;
+}
+
+/* ================= BEM-ESTAR ================= */
+// Água = hábito diário "Beber água" + habito_checkin.quantidade (ml acumulados no dia)
+function waterHabit(create) {
+    let c = DB.find('compromisso', x => x.id_estudante === uid() && x.titulo === WATER_TITLE);
+    if (!c && create) c = criarHabitoBase(WATER_TITLE, 'Meta: 2000 ml por dia', catByName('Saúde').id_categoria, 'diaria', []);
+    return c;
+}
+function waterToday() {
+    const c = waterHabit(false); if (!c) return 0;
+    const k = checkinOf(c, todayStr()); return k ? k.quantidade : 0;
+}
+function addWater() {
+    const cur = waterToday();
+    if (cur < 2000) {
+        const c = waterHabit(true), k = checkinOf(c, todayStr());
+        if (k) DB.update('habito_checkin', k.id_checkin, { quantidade: cur + 250 });
+        else DB.insert('habito_checkin', { id_compromisso: c.id_compromisso, data: todayStr(), quantidade: 250, criado_em: fmtTs(new Date()) });
+        updateWaterUI();
+    }
+}
+function updateWaterUI() {
+    const w = waterToday();
+    $('water-bar').style.width = `${(w / 2000) * 100}%`;
+    $('water-text').innerText = `Você bebeu ${w / 1000}L de uma meta de 2L`;
+}
+
+// Sono / foco = compromisso + bloco_descompressao (tipo 'sono' / 'offline')
+function blocoHoje(tipo) {
+    return DB.where('bloco_descompressao', b => b.tipo === tipo)
+        .map(b => ({ b, c: DB.get('compromisso', b.id_compromisso) }))
+        .find(x => x.c && x.c.id_estudante === uid() && x.c.data_inicio.slice(0, 10) === todayStr());
+}
+function addBloco(tipo, titulo, minutos, concluidoQuando) {
+    const x = blocoHoje(tipo);
+    if (x) {
+        const novo = x.b.duracao_min + minutos;
+        const ini = new Date(x.c.data_inicio);
+        DB.update('bloco_descompressao', x.b.id_bloco, { duracao_min: novo });
+        DB.update('compromisso', x.c.id_compromisso, { data_fim: fmtTs(new Date(ini.getTime() + novo * 60000)), status: novo >= concluidoQuando ? 'concluido' : 'em_andamento' });
+    } else {
+        const ini = new Date(); ini.setHours(0, 0, 0, 0);
+        const c = DB.insert('compromisso', {
+            id_estudante: uid(), id_categoria: catByName('Descompressão').id_categoria, id_semana: null, id_meta: null,
+            titulo, descricao: null, data_inicio: fmtTs(ini), data_fim: fmtTs(new Date(ini.getTime() + minutos * 60000)),
+            dia_inteiro: false, local: null, prioridade: 'media', status: minutos >= concluidoQuando ? 'concluido' : 'em_andamento',
+            origem: 'manual', criado_em: fmtTs(new Date())
+        });
+        DB.insert('bloco_descompressao', { id_compromisso: c.id_compromisso, tipo, duracao_min: minutos, obrigatorio: false, sugestao_sistema: false });
+    }
+}
+const sleepMinutes = () => { const x = blocoHoje('sono'); return x ? x.b.duracao_min : 0; };
+const focusTodayMin = () => { const x = blocoHoje('offline'); return x ? x.b.duracao_min : 0; };
+
+function addSleep() {
+    if (sleepMinutes() < 480) { addBloco('sono', 'Sono', 60, 480); updateSleepUI(); }
+}
+function updateSleepUI() {
+    const h = sleepMinutes() / 60;
+    $('sleep-bar').style.width = `${(h / 8) * 100}%`;
+    $('sleep-text').innerText = `Você dormiu ${h}h de uma meta de 8h`;
+}
+
+function saveFocus() {
+    const add = Math.floor(state.focusTime / 60) - Math.floor(state.focusSaved / 60);   // só minutos completos
+    if (add > 0) { addBloco('offline', 'Foco / Meditação', add, 1); state.focusSaved = state.focusTime; }
+}
+
+function toggleFocus() {
+    const btn = $('btn-focus'), text = $('focus-text'), bar = $('focus-bar');
+
+    if (!state.isFocusing && state.focusTime >= 300) {   // recomeçar após concluir
+        state.focusTime = 0; state.focusSaved = 0; bar.style.width = '0%';
+    }
+
+    if (state.isFocusing) {
+        clearInterval(state.focusInterval);
+        state.isFocusing = false;
+        saveFocus();
+        btn.innerText = 'Continuar';
+        text.innerText = 'Foco pausado. Respire fundo.';
+    } else {
+        state.isFocusing = true;
+        btn.innerText = 'Pausar';
+        state.focusInterval = setInterval(() => {
+            state.focusTime++;
+            bar.style.width = `${(state.focusTime / 300) * 100}%`;
+            const min = Math.floor(state.focusTime / 60), sec = state.focusTime % 60;
+            text.innerText = `Focando... ${min}m ${sec}s`;
+            if (state.focusTime >= 300) {
+                clearInterval(state.focusInterval);
+                state.isFocusing = false;
+                saveFocus();
+                btn.innerText = 'Concluído!';
+                text.innerText = `Parabéns! Você completou 5 minutos de foco. Hoje: ${focusTodayMin()} min no total.`;
+            }
+        }, 1000);
+    }
+}
+
+function renderBemestar() {
+    updateWaterUI(); updateSleepUI();
+    if (!state.isFocusing && state.focusTime === 0) {
+        const m = focusTodayMin();
+        $('focus-text').innerText = m ? `Hoje você já focou ${m} min. Pressione iniciar para mais 5.` : 'Pressione iniciar para focar por 5 minutos.';
+        $('focus-bar').style.width = '0%'; $('btn-focus').innerText = 'Iniciar';
+    }
+}
+
+/* ================= CHAT DA AYA (conversa + mensagem) ================= */
+const AYA_GREETING = `Olá! Eu sou a <strong>Aya</strong>, sua assistente. 🌸<br><br>Digite "dica" para foco, "água" para lembrar de se hidratar ou pergunte sobre suas tarefas, hábitos e metas.<br><br><i>(Psst... há um segredo escondido aqui. Tente digitar "flow")</i>`;
+const fmtMsg = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+const RISCO = ['me matar', 'suicid', 'quero morrer', 'não quero mais viver', 'nao quero mais viver', 'me machucar', 'automutila', 'acabar com tudo', 'sumir para sempre'];
+const detectRisco = t => RISCO.some(k => t.toLowerCase().includes(k));
+
+function appendMsg(role, html) {
+    const box = $('chat-messages');
+    const d = document.createElement('div');
+    d.className = 'message ' + (role === 'user' ? 'user' : 'aya');
+    d.innerHTML = `<div class="msg-bubble">${html}</div>`;
+    box.appendChild(d);
+    box.scrollTop = box.scrollHeight;
+}
+
+function loadConversa() {
+    const abertas = DB.where('conversa', c => c.id_estudante === uid() && !c.encerrada_em);
+    state.conversa = abertas.length ? abertas[abertas.length - 1] : null;
+    $('chat-messages').innerHTML = '';
+    appendMsg('aya', AYA_GREETING);
+    if (state.conversa) {
+        DB.where('mensagem', m => m.id_conversa === state.conversa.id_conversa && m.papel !== 'system')
+            .forEach(m => appendMsg(m.papel, fmtMsg(m.conteudo)));
+    }
+}
+
+function ensureConversa(primeiraMsg) {
+    if (!state.conversa) {
+        state.conversa = DB.insert('conversa', {
+            id_estudante: uid(), titulo: primeiraMsg.slice(0, 60), contexto: { origem: 'frontend_demo' },
+            iniciada_em: fmtTs(new Date()), encerrada_em: null
+        });
+    }
+    return state.conversa;
+}
+
+function saveMsg(papel, conteudo, risco) {
+    DB.insert('mensagem', {
+        id_conversa: state.conversa.id_conversa, papel, conteudo, tokens: null,
+        modelo_usado: papel === 'assistant' ? 'aya-demo-local' : null, risco_detectado: !!risco, criada_em: fmtTs(new Date())
+    });
+}
+
+function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
+
+function sendMessage() {
+    const input = $('chat-input');
+    const text = input.value.trim();
+    if (text === '' || !state.user) return;
+
+    ensureConversa(text);
+    const risco = detectRisco(text);
+    saveMsg('user', text, risco);
+    appendMsg('user', esc(text));
+    input.value = '';
+
+    $('screen-aya').classList.add('aya-typing');
+
+    setTimeout(() => {
+        let response = '';
+        const lowerText = text.toLowerCase();
+
+        // ---- INÍCIO DO EASTER EGG ----
+        if (lowerText === 'flow' || lowerText === 'segredo') {
+            response = `🌟 **Você encontrou o Modo Turbo!** 🌟\n\nAs cores da tela vão girar por 10 segundos. Aproveite!`;
+
+            document.body.classList.add('turbo-active');
+            $('navbar').classList.add('turbo');
+            $('aya-face').innerText = '🤯';
+
+            setTimeout(() => {
+                document.body.classList.remove('turbo-active');
+                $('navbar').classList.remove('turbo');
+                $('aya-face').innerText = '✨';
+            }, 10000);
+        }
+        // ---- FIM DO EASTER EGG ----
+        else if (risco) {
+            response = 'Sinto muito que você esteja passando por isso, e fico feliz que tenha me contado. 💜 Você não precisa lidar com isso sozinho(a).\n\nSe estiver em perigo agora, ligue **192 (SAMU)** ou **190**. O **CVV** atende 24h, de graça, pelo **188** (ou pelo chat em cvv.org.br).\n\nSe puder, fale também hoje com alguém de confiança: um familiar, professor ou colega. Eu continuo aqui com você.';
+        } else if (lowerText.includes('dica') || lowerText.includes('foco')) {
+            response = 'Uma ótima dica de foco é a Técnica Pomodoro: estude por 25 minutos e descanse 5. Quer que eu inicie o timer na aba de Bem-estar?';
+        } else if (lowerText.includes('água') || lowerText.includes('agua') || lowerText.includes('beber')) {
+            response = `A hidratação é fundamental para o cérebro! Hoje você bebeu ${waterToday() / 1000}L de 2L. Vá até a aba Bem-estar e registre mais 250ml. 💧`;
+        } else if (/tarefa|agenda|compromisso/.test(lowerText)) {
+            const ab = minhasTarefas().filter(c => c.status === 'pendente' || c.status === 'em_andamento');
+            const urg = ab.filter(c => c.prioridade === 'urgente' || c.prioridade === 'alta').length;
+            response = ab.length ? `Você tem **${ab.length}** tarefa(s) em aberto${urg ? `, sendo **${urg}** de prioridade alta ou urgente` : ''}. Comece pela mais urgente e vá marcando o status conforme avança!` : 'Você não tem tarefas em aberto. Quer criar uma agora na aba Tarefas?';
+        } else if (/h[áa]bito|rotina|sequ[êe]ncia/.test(lowerText)) {
+            const hs = meusHabitos().filter(c => habitDays(c).includes(isoDow(new Date())));
+            const feitos = hs.filter(c => checkinOf(c, todayStr())).length;
+            response = hs.length ? `Hoje você completou **${feitos} de ${hs.length}** hábitos. ${feitos === hs.length ? 'Tudo certo, parabéns!' : 'Falta pouco, bora manter a sequência!'}` : 'Você ainda não tem hábitos para hoje. Que tal criar um bem pequeno na aba Hábitos?';
+        } else if (/meta|objetivo/.test(lowerText)) {
+            const ms = DB.where('meta', m => m.id_estudante === uid() && m.status === 'ativa');
+            response = ms.length ? `Você tem **${ms.length}** meta(s) ativa(s). Dica: vincule tarefas a cada meta para o progresso ser calculado automaticamente.` : 'Você ainda não tem metas. Criar uma dá direção para as tarefas!';
+        } else if (lowerText.includes('estudo') || lowerText.includes('matéria') || lowerText.includes('prova')) {
+            response = 'Para os estudos, recomendo revisar as tarefas da categoria Estudo que ainda estão em aberto. Quer que eu te ajude a fazer um cronograma?';
+        } else if (/(^|\s)(oi|olá|ola|bom dia|boa tarde|boa noite)(\s|[!.,?]|$)/.test(lowerText)) {
+            response = `Olá, ${state.user.nome}! Como estão seus estudos hoje? Estou aqui para ajudar no que precisar. 🌸`;
+        } else {
+            response = 'Entendi! Como uma IA de demonstração, ainda estou aprendendo. Mas posso te ajudar com dicas de foco, água, tarefas, hábitos e metas. O que acha?';
+        }
+
+        saveMsg('assistant', response, false);
+        $('screen-aya').classList.remove('aya-typing');
+        appendMsg('aya', fmtMsg(response));
+    }, 900);
+}
+
+/* ================= INICIALIZAÇÃO ================= */
+DB.init();
+const savedUser = DB.d.session ? DB.get('estudante', DB.d.session) : null;
+if (savedUser) startSession(savedUser); else navTo('screen-login');
+
+</script>
+</body>
+</html>
