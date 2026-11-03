@@ -2,324 +2,387 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flow Agendas — Protótipo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#14123A">
+    <title>Flow Agendas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="app public" id="app">
 
-    <!-- BARRA SUPERIOR -->
-    <header class="top-navbar" id="navbar">
-        <div class="brand" onclick="navTo('screen-menu', 'nav-dashboard')">Flow <span>Agendas</span></div>
+    <!-- NAVEGAÇÃO: barra lateral no desktop, barra inferior no celular -->
+    <aside class="side" id="navbar">
+        <div class="brand" onclick="navTo('screen-menu', 'nav-dashboard')">
+            <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>flow
+        </div>
 
-        <nav class="nav-links hidden" id="nav-links">
-            <button class="nav-btn" id="nav-dashboard" onclick="navTo('screen-menu', 'nav-dashboard')">Dashboard</button>
-            <button class="nav-btn" id="nav-tarefas" onclick="navTo('screen-tarefas', 'nav-tarefas')">Tarefas</button>
-            <button class="nav-btn" id="nav-habitos" onclick="navTo('screen-habitos', 'nav-habitos')">Hábitos</button>
-            <button class="nav-btn" id="nav-metas" onclick="navTo('screen-metas', 'nav-metas')">Metas</button>
-            <button class="nav-btn" id="nav-bemestar" onclick="navTo('screen-bemestar', 'nav-bemestar')">Bem-estar</button>
-            <button class="nav-btn" id="nav-aya" onclick="navTo('screen-aya', 'nav-aya')">Aya</button>
-            <button class="nav-btn" id="nav-config" onclick="navTo('screen-config', 'nav-config')">Config.</button>
+        <nav class="nav" id="nav-links" aria-label="Principal">
+            <button class="nav-btn" id="nav-dashboard" onclick="navTo('screen-menu', 'nav-dashboard')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Hoje</span></button>
+            <button class="nav-btn" id="nav-tarefas" onclick="navTo('screen-tarefas', 'nav-tarefas')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M3 6l1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg><span>Tarefas</span></button>
+            <button class="nav-btn" id="nav-habitos" onclick="navTo('screen-habitos', 'nav-habitos')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg><span>Hábitos</span></button>
+            <button class="nav-btn" id="nav-metas" onclick="navTo('screen-metas', 'nav-metas')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg><span>Metas</span></button>
+            <button class="nav-btn" id="nav-bemestar" onclick="navTo('screen-bemestar', 'nav-bemestar')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 9 2.5C21 13.5 17 17 12 21z"/></svg><span>Bem-estar</span></button>
+            <button class="nav-btn" id="nav-aya" onclick="navTo('screen-aya', 'nav-aya')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Aya</span></button>
+            <button class="nav-btn" id="nav-config" onclick="navTo('screen-config', 'nav-config')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M19 6h1M4 12h3M13 12h7M4 18h11M21 18h-1"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Ajustes</span></button>
         </nav>
 
-        <div class="user-profile hidden" id="user-area" onclick="navTo('screen-config', 'nav-config')">
-            <span id="display-username">Aluno</span>
-            <div class="avatar" id="avatar-letter">A</div>
-        </div>
-    </header>
+        <button class="side-user" id="user-area" onclick="navTo('screen-config', 'nav-config')" aria-label="Abrir ajustes">
+            <span class="avatar js-avatar">A</span><span class="js-username">Aluno</span>
+        </button>
+    </aside>
 
-    <main class="container">
+    <div class="mobile-top">
+        <div class="brand light" onclick="navTo('screen-menu', 'nav-dashboard')"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>flow</div>
+        <button class="avatar js-avatar" onclick="navTo('screen-config', 'nav-config')" aria-label="Abrir ajustes">A</button>
+    </div>
 
-        <!-- LOGIN -->
+    <main class="main">
+
+        <!-- ENTRAR -->
         <section id="screen-login" class="screen active">
-            <div class="card">
-                <h2>Flow Agendas</h2>
-                <p class="sub">Entre para acessar suas tarefas, hábitos e metas.</p>
-                <form onsubmit="event.preventDefault(); doLogin();">
-                    <div class="input-group">
-                        <label for="login-email">E-mail</label>
-                        <input type="email" id="login-email" placeholder="voce@email.com" autocomplete="email">
+            <div class="auth">
+                <div class="auth-pitch">
+                    <div class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>flow</div>
+                    <div>
+                        <h1>Escola, trabalho e descanso na mesma linha.</h1>
+                        <p>O Flow organiza tarefas, hábitos e metas de quem divide a rotina entre aula e jornada de trabalho.</p>
                     </div>
-                    <div class="input-group">
-                        <label for="login-pass">Senha</label>
-                        <input type="password" id="login-pass" autocomplete="current-password">
+                    <div class="demo" aria-hidden="true">
+                        <div class="demo-row"><span>Escola</span><div class="demo-lane"><b style="left:5.5%;width:30.5%;--c:#6C63FF;--d:.2s">Aula</b></div></div>
+                        <div class="demo-row"><span>Trabalho</span><div class="demo-lane"><b style="left:41.5%;width:33.5%;--c:#0A8FB3;--d:.4s">Jornada</b></div></div>
+                        <div class="demo-row"><span>Seu dia</span><div class="demo-lane"><b style="left:77%;width:12%;--c:#0E9F6E;--d:.6s">Estudo</b><b style="left:6%;width:14%;--c:#E0287D;--d:.8s">Treino</b></div></div>
                     </div>
-                    <button class="btn btn-block" type="submit">Entrar</button>
-                </form>
-                <p class="auth-switch">Não tem conta? <button class="link-btn" onclick="navTo('screen-cadastro')">Criar conta</button></p>
+                </div>
+                <div class="auth-form">
+                    <div class="auth-card">
+                        <h2>Entrar</h2>
+                        <p class="muted">Use o e-mail do seu cadastro.</p>
+                        <form onsubmit="event.preventDefault(); doLogin();">
+                            <div class="field"><label for="login-email">E-mail</label><input type="email" id="login-email" placeholder="voce@email.com" autocomplete="email"></div>
+                            <div class="field"><label for="login-pass">Senha</label><input type="password" id="login-pass" autocomplete="current-password"></div>
+                            <button class="btn block" type="submit">Entrar</button>
+                        </form>
+                        <p class="auth-switch">Ainda não tem conta? <button class="link" onclick="navTo('screen-cadastro')">Criar conta</button></p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- CADASTRO -->
+        <!-- CRIAR CONTA -->
         <section id="screen-cadastro" class="screen">
-            <div class="page-header"><div><h1>Criar conta</h1><p>Dados do estudante, instituição e curso.</p></div></div>
-            <div class="card">
-                <form onsubmit="event.preventDefault(); doCadastro();">
-                    <div class="form-grid">
-                        <div class="form-section-title">Você</div>
-                        <div class="input-group full"><label for="cad-nome">Nome completo</label><input type="text" id="cad-nome" maxlength="150" required></div>
-                        <div class="input-group"><label for="cad-email">E-mail</label><input type="email" id="cad-email" maxlength="150" required autocomplete="email"></div>
-                        <div class="input-group"><label for="cad-senha">Senha (mín. 6 caracteres)</label><input type="password" id="cad-senha" minlength="6" required autocomplete="new-password"></div>
-                        <div class="input-group"><label for="cad-nasc">Data de nascimento</label><input type="date" id="cad-nasc" required></div>
-                        <div class="input-group">
-                            <label for="cad-ano">Ano escolar</label>
-                            <select id="cad-ano"><option value="1_ano">1º ano</option><option value="2_ano">2º ano</option><option value="3_ano">3º ano</option></select>
-                        </div>
-                        <div class="input-group">
-                            <label for="cad-turno-escolar">Turno escolar</label>
-                            <select id="cad-turno-escolar"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select>
-                        </div>
+            <div class="signup">
+                <button class="link back" onclick="navTo('screen-login')">Voltar para entrar</button>
+                <h1>Criar conta</h1>
+                <p class="muted">Seus dados, sua escola e seu curso. Tudo fica salvo só neste navegador.</p>
+                <form id="form-cadastro" onsubmit="event.preventDefault(); doCadastro();">
+                    <div class="grid2">
+                        <h2 class="form-sec first">Você</h2>
+                        <div class="field span2"><label for="cad-nome">Nome completo</label><input type="text" id="cad-nome" maxlength="150" required></div>
+                        <div class="field"><label for="cad-email">E-mail</label><input type="email" id="cad-email" maxlength="150" required autocomplete="email"></div>
+                        <div class="field"><label for="cad-senha">Senha (mínimo de 6 caracteres)</label><input type="password" id="cad-senha" minlength="6" required autocomplete="new-password"></div>
+                        <div class="field"><label for="cad-nasc">Data de nascimento</label><input type="date" id="cad-nasc" required></div>
+                        <div class="field"><label for="cad-ano">Ano escolar</label>
+                            <select id="cad-ano"><option value="1_ano">1º ano</option><option value="2_ano">2º ano</option><option value="3_ano">3º ano</option></select></div>
+                        <div class="field"><label for="cad-turno-escolar">Turno escolar</label>
+                            <select id="cad-turno-escolar"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select></div>
 
-                        <div class="form-section-title">Instituição</div>
-                        <div class="input-group full"><label for="cad-inst">Nome da instituição</label><input type="text" id="cad-inst" maxlength="150" required></div>
-                        <div class="input-group">
-                            <label for="cad-inst-tipo">Tipo</label>
-                            <select id="cad-inst-tipo"><option value="escola">Escola</option><option value="empresa">Empresa</option><option value="ong">ONG</option><option value="outro">Outro</option></select>
-                        </div>
-                        <div class="input-group"><label for="cad-cidade">Cidade</label><input type="text" id="cad-cidade" maxlength="100" required></div>
-                        <div class="input-group"><label for="cad-uf">UF</label><input type="text" id="cad-uf" maxlength="2" placeholder="PR" required style="text-transform:uppercase"></div>
+                        <h2 class="form-sec">Instituição</h2>
+                        <div class="field span2"><label for="cad-inst">Nome da instituição</label><input type="text" id="cad-inst" maxlength="150" required></div>
+                        <div class="field"><label for="cad-inst-tipo">Tipo</label>
+                            <select id="cad-inst-tipo"><option value="escola">Escola</option><option value="empresa">Empresa</option><option value="ong">ONG</option><option value="outro">Outro</option></select></div>
+                        <div class="field"><label for="cad-cidade">Cidade</label><input type="text" id="cad-cidade" maxlength="100" required></div>
+                        <div class="field"><label for="cad-uf">UF</label><input type="text" id="cad-uf" maxlength="2" placeholder="PR" required style="text-transform:uppercase"></div>
 
-                        <div class="form-section-title">Curso</div>
-                        <div class="input-group full"><label for="cad-curso">Nome do curso</label><input type="text" id="cad-curso" maxlength="150" required></div>
-                        <div class="input-group">
-                            <label for="cad-curso-turno">Turno do curso</label>
-                            <select id="cad-curso-turno"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option><option value="integral">Integral</option></select>
-                        </div>
-                        <div class="input-group"><label for="cad-curso-duracao">Duração (semestres)</label><input type="number" id="cad-curso-duracao" min="1" max="20" value="6" required></div>
+                        <h2 class="form-sec">Curso</h2>
+                        <div class="field span2"><label for="cad-curso">Nome do curso</label><input type="text" id="cad-curso" maxlength="150" required></div>
+                        <div class="field"><label for="cad-curso-turno">Turno do curso</label>
+                            <select id="cad-curso-turno"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option><option value="integral">Integral</option></select></div>
+                        <div class="field"><label for="cad-curso-duracao">Duração em semestres</label><input type="number" id="cad-curso-duracao" min="1" max="20" value="6" required></div>
                     </div>
-                    <div class="modal-actions">
-                        <button type="button" class="btn btn-ghost" onclick="navTo('screen-login')">Voltar</button>
-                        <button type="submit" class="btn">Criar conta</button>
-                    </div>
+                    <div class="form-actions"><button type="submit" class="btn">Criar conta</button></div>
                 </form>
             </div>
         </section>
 
-        <!-- DASHBOARD -->
+        <!-- HOJE -->
         <section id="screen-menu" class="screen">
-            <div class="page-header">
-                <div><h1>Visão Geral</h1><p id="greeting-text">O que vamos fazer hoje?</p></div>
-                <div class="header-actions">
-                    <button class="btn btn-sm" onclick="openTarefa()">+ Tarefa</button>
-                    <button class="btn btn-sm btn-green" onclick="openHabito()">+ Hábito</button>
-                    <button class="btn btn-sm btn-pink" onclick="openMeta()">+ Meta</button>
+            <div class="head">
+                <div>
+                    <h1 id="today-title">Olá.</h1>
+                    <p class="summary" id="today-summary"></p>
+                    <time class="today-date" id="today-date"></time>
+                </div>
+                <div class="head-actions">
+                    <button class="btn" onclick="openTarefa()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nova tarefa</button>
+                    <button class="btn ghost" onclick="openHabito()">Novo hábito</button>
+                    <button class="btn ghost" onclick="openMeta()">Nova meta</button>
                 </div>
             </div>
 
-            <div class="stat-grid">
-                <div class="stat-card"><div class="num" id="stat-tarefas">0</div><div class="lbl" id="stat-tarefas-lbl">tarefas em aberto</div></div>
-                <div class="stat-card"><div class="num" id="stat-habitos">0/0</div><div class="lbl">hábitos de hoje</div></div>
-                <div class="stat-card"><div class="num" id="stat-metas">0</div><div class="lbl">metas ativas</div></div>
-                <div class="stat-card"><div class="num" id="stat-agua">0L</div><div class="lbl">água hoje (meta 2L)</div></div>
+            <div class="panel rail-panel">
+                <div class="rail-scroll"><div class="rail" id="rail"></div></div>
+                <p class="rail-note">O horário de aula é estimado pelo seu turno escolar.</p>
             </div>
 
-            <div class="dashboard-grid">
-                <div class="action-card" onclick="navTo('screen-tarefas', 'nav-tarefas')"><div class="action-icon">📋</div><div class="action-text"><h3>Tarefas</h3><p>Estudos, trabalho e compromissos</p></div></div>
-                <div class="action-card" onclick="navTo('screen-habitos', 'nav-habitos')"><div class="action-icon">🔥</div><div class="action-text"><h3>Hábitos</h3><p>Rotinas e sequências</p></div></div>
-                <div class="action-card" onclick="navTo('screen-metas', 'nav-metas')"><div class="action-icon">🎯</div><div class="action-text"><h3>Metas</h3><p>Objetivos com prazo</p></div></div>
-                <div class="action-card" onclick="navTo('screen-bemestar', 'nav-bemestar')"><div class="action-icon">🌱</div><div class="action-text"><h3>Bem-estar</h3><p>Água, sono e foco</p></div></div>
-                <div class="action-card" onclick="navTo('screen-aya', 'nav-aya')"><div class="action-icon">✨</div><div class="action-text"><h3>Aya</h3><p>Assistente de IA</p></div></div>
-                <div class="action-card" onclick="navTo('screen-config', 'nav-config')"><div class="action-icon">⚙️</div><div class="action-text"><h3>Configurações</h3><p>Perfil e curso</p></div></div>
+            <div class="today-cols">
+                <section>
+                    <div class="col-h"><h2>Para hoje</h2><button class="link" onclick="navTo('screen-tarefas', 'nav-tarefas')">Ver tarefas</button></div>
+                    <div id="today-tasks"></div>
+                </section>
+                <section>
+                    <div class="col-h"><h2>Hábitos de hoje</h2><button class="link" onclick="navTo('screen-habitos', 'nav-habitos')">Ver hábitos</button></div>
+                    <div id="today-habits"></div>
+                </section>
             </div>
         </section>
 
         <!-- TAREFAS -->
         <section id="screen-tarefas" class="screen">
-            <div class="page-header">
-                <div><h1>Tarefas</h1><p>Clique no status para avançar: Pendente → Em andamento → Concluído.</p></div>
-                <div class="header-actions"><button class="btn" onclick="openTarefa()">+ Nova tarefa</button></div>
+            <div class="head">
+                <div><h1>Tarefas</h1><p>Marque o círculo para concluir. Use o botão de status para marcar como em andamento.</p></div>
+                <div class="head-actions"><button class="btn" onclick="openTarefa()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nova tarefa</button></div>
             </div>
-            <div class="study-filters">
-                <button class="filter-pill active" id="f-aberto" onclick="filterTarefas('aberto')">Em aberto</button>
-                <button class="filter-pill" id="f-concluido" onclick="filterTarefas('concluido')">Concluídas</button>
-                <button class="filter-pill" id="f-cancelado" onclick="filterTarefas('cancelado')">Canceladas</button>
+            <div class="tabs" role="tablist">
+                <button class="tab active" role="tab" aria-selected="true" id="f-aberto" onclick="filterTarefas('aberto')">Em aberto</button>
+                <button class="tab" role="tab" aria-selected="false" id="f-concluido" onclick="filterTarefas('concluido')">Concluídas</button>
+                <button class="tab" role="tab" aria-selected="false" id="f-cancelado" onclick="filterTarefas('cancelado')">Canceladas</button>
             </div>
-            <div class="subject-list" id="subject-list"></div>
+            <div id="subject-list"></div>
         </section>
 
         <!-- HÁBITOS -->
         <section id="screen-habitos" class="screen">
-            <div class="page-header">
-                <div><h1>Hábitos</h1><p>Marque o que você fez hoje e mantenha a sequência.</p></div>
-                <div class="header-actions"><button class="btn btn-green" onclick="openHabito()">+ Novo hábito</button></div>
+            <div class="head">
+                <div><h1>Hábitos</h1><p>Marque o que fez hoje e mantenha a sequência.</p></div>
+                <div class="head-actions"><button class="btn green" onclick="openHabito()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Novo hábito</button></div>
             </div>
-            <div class="habit-list" id="habit-list"></div>
+            <div id="habit-list"></div>
         </section>
 
         <!-- METAS -->
         <section id="screen-metas" class="screen">
-            <div class="page-header">
+            <div class="head">
                 <div><h1>Metas</h1><p>Vincule tarefas a uma meta e o progresso é calculado sozinho.</p></div>
-                <div class="header-actions"><button class="btn btn-pink" onclick="openMeta()">+ Nova meta</button></div>
+                <div class="head-actions"><button class="btn pink" onclick="openMeta()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nova meta</button></div>
             </div>
-            <div class="meta-grid" id="meta-list"></div>
+            <div id="meta-list"></div>
         </section>
 
         <!-- BEM-ESTAR -->
         <section id="screen-bemestar" class="screen">
-            <div class="page-header"><div><h1>Bem-estar</h1><p>Registre água, sono e foco do dia.</p></div></div>
-            <div class="wellness-container">
-                <div class="wellness-row">
-                    <div class="wellness-icon-bg">💧</div>
-                    <div class="wellness-details">
-                        <h3>Hidratação</h3>
-                        <p id="water-text">Você bebeu 0L de uma meta de 2L</p>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="water-bar" style="width:0%; background:#06B6D4"></div></div>
-                    </div>
-                    <button class="btn" onclick="addWater()">+ 250ml</button>
+            <div class="head"><div><h1>Bem-estar</h1><p>Registre água, sono e foco do dia.</p></div></div>
+            <div class="panel wells">
+                <div class="well">
+                    <div class="well-name"><h2>Água</h2><p>Meta de 8 copos de 250 ml.</p></div>
+                    <div><div class="meter water" id="water-meter"></div><p class="well-read" id="water-text">0 L de 2 L</p></div>
+                    <button class="btn cyan" onclick="addWater()">+ 250 ml</button>
                 </div>
-                <div class="wellness-row">
-                    <div class="wellness-icon-bg">🌙</div>
-                    <div class="wellness-details">
-                        <h3>Sono</h3>
-                        <p id="sleep-text">Você dormiu 0h de uma meta de 8h</p>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="sleep-bar" style="width:0%; background:#DB2777"></div></div>
-                    </div>
-                    <button class="btn btn-pink" onclick="addSleep()">+ 1h</button>
+                <div class="well">
+                    <div class="well-name"><h2>Sono</h2><p>Meta de 8 horas.</p></div>
+                    <div><div class="meter sleep" id="sleep-meter"></div><p class="well-read" id="sleep-text">0 h de 8 h</p></div>
+                    <button class="btn pink" onclick="addSleep()">+ 1 h</button>
                 </div>
-                <div class="wellness-row">
-                    <div class="wellness-icon-bg">🧘</div>
-                    <div class="wellness-details">
-                        <h3>Foco / Meditação</h3>
-                        <p id="focus-text">Pressione iniciar para focar por 5 minutos.</p>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="focus-bar" style="width:0%; background:#059669"></div></div>
-                    </div>
-                    <button class="btn btn-green" id="btn-focus" onclick="toggleFocus()">Iniciar</button>
+                <div class="well">
+                    <div class="well-name"><h2>Foco e meditação</h2><p>Sessões de 5 minutos.</p></div>
+                    <div><div class="clock" id="focus-clock">00:00</div>
+                        <div class="bar thick"><i id="focus-bar" style="width:0%"></i></div>
+                        <p class="well-read" id="focus-text">Inicie para focar por 5 minutos.</p></div>
+                    <button class="btn green" id="btn-focus" onclick="toggleFocus()">Iniciar</button>
                 </div>
             </div>
         </section>
 
-        <!-- CONFIGURAÇÕES -->
+        <!-- AJUSTES -->
         <section id="screen-config" class="screen">
-            <div class="page-header"><div><h1>Configurações</h1><p>Gerencie sua conta.</p></div></div>
-            <div class="card">
-                <div class="settings-section">
-                    <h3>Perfil do estudante</h3>
-                    <div class="form-grid">
-                        <div class="input-group full"><label for="config-name">Nome de exibição</label><input type="text" id="config-name" maxlength="150" oninput="updateName(this.value)"></div>
-                        <div class="input-group"><label for="config-email">E-mail</label><input type="text" id="config-email" readonly></div>
-                        <div class="input-group"><label for="config-inst">Instituição</label><input type="text" id="config-inst" readonly></div>
-                        <div class="input-group"><label for="config-curso">Curso</label><input type="text" id="config-curso" readonly></div>
-                        <div class="input-group">
-                            <label for="config-ano">Ano escolar</label>
-                            <select id="config-ano"><option value="1_ano">1º ano</option><option value="2_ano">2º ano</option><option value="3_ano">3º ano</option></select>
-                        </div>
-                        <div class="input-group">
-                            <label for="config-turno">Turno escolar</label>
-                            <select id="config-turno"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select>
-                        </div>
+            <div class="head"><div><h1>Ajustes</h1><p>Seu perfil, sua jornada de trabalho e preferências.</p></div></div>
+            <div class="panel settings">
+                <div class="set-sec">
+                    <h2>Perfil</h2>
+                    <div class="grid2">
+                        <div class="field span2"><label for="config-name">Nome de exibição</label><input type="text" id="config-name" maxlength="150" oninput="updateName(this.value)"></div>
+                        <div class="field"><label for="config-email">E-mail</label><input type="text" id="config-email" readonly></div>
+                        <div class="field"><label for="config-inst">Instituição</label><input type="text" id="config-inst" readonly></div>
+                        <div class="field span2"><label for="config-curso">Curso</label><input type="text" id="config-curso" readonly></div>
+                        <div class="field"><label for="config-ano">Ano escolar</label>
+                            <select id="config-ano"><option value="1_ano">1º ano</option><option value="2_ano">2º ano</option><option value="3_ano">3º ano</option></select></div>
+                        <div class="field"><label for="config-turno">Turno escolar</label>
+                            <select id="config-turno"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select></div>
                     </div>
                 </div>
-                <div class="settings-section">
-                    <h3>Preferências</h3>
-                    <div class="setting-row"><span>Tema</span><select><option>Claro (padrão)</option><option disabled>Escuro (em breve)</option></select></div>
-                    <div class="setting-row"><span>Idioma</span><select><option>Português (BR)</option><option>English</option></select></div>
-                    <p class="hint">Tema e idioma ainda não existem no banco de dados; são só visuais.</p>
+
+                <div class="set-sec">
+                    <div class="set-h"><div><h2>Jornada de trabalho</h2><p class="muted">Aparece na linha do dia, na tela Hoje.</p></div>
+                        <button class="btn ghost sm" onclick="openJornada()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Adicionar jornada</button></div>
+                    <div id="jornada-list"></div>
                 </div>
-                <div class="settings-footer">
-                    <button class="btn btn-ghost" onclick="logout()">Sair da conta</button>
-                    <button class="btn" onclick="saveConfig()">Salvar alterações</button>
+
+                <div class="set-sec">
+                    <h2>Preferências</h2>
+                    <div class="grid2">
+                        <div class="field"><label for="pref-tema">Tema</label><select id="pref-tema"><option>Claro</option><option disabled>Escuro (em breve)</option></select></div>
+                        <div class="field"><label for="pref-idioma">Idioma</label><select id="pref-idioma"><option>Português (BR)</option><option>English</option></select></div>
+                    </div>
+                    <p class="hint">Tema e idioma ainda não existem no banco de dados, então não são salvos.</p>
+                </div>
+
+                <div class="set-foot">
+                    <button class="btn ghost" onclick="logout()">Sair da conta</button>
+                    <button class="btn" onclick="saveConfig()">Salvar ajustes</button>
                 </div>
             </div>
         </section>
 
-        <!-- CHAT AYA -->
+        <!-- AYA -->
         <section id="screen-aya" class="screen">
-            <div class="chat-container">
-                <div class="chat-header">
-                    <div class="aya-avatar" id="aya-face">✨</div>
-                    <div class="chat-header-info"><h3>Aya</h3><p>Online</p></div>
+            <div class="chat panel">
+                <div class="chat-head">
+                    <div class="aya-av" id="aya-face">✨</div>
+                    <div><h2>Aya</h2><p class="st"><span class="st-on">Online</span><span class="st-typing">digitando…</span></p></div>
                 </div>
-                <div class="chat-messages" id="chat-messages"></div>
-                <div class="typing-bar" id="typing-bar">Aya está digitando…</div>
-                <div class="chat-input-area">
-                    <input type="text" id="chat-input" placeholder="Pergunte algo para a Aya..." onkeypress="handleEnter(event)" autocomplete="off">
-                    <button class="btn" onclick="sendMessage()">Enviar</button>
+                <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+                <div class="typing" id="typing-bar"><span class="mini">✨</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="chat-chips">
+                    <button class="chip-btn" onclick="askAya('Dica de foco')">Dica de foco</button>
+                    <button class="chip-btn" onclick="askAya('Minhas tarefas')">Minhas tarefas</button>
+                    <button class="chip-btn" onclick="askAya('Meus hábitos')">Meus hábitos</button>
+                    <button class="chip-btn" onclick="askAya('Minhas metas')">Minhas metas</button>
+                    <button class="chip-btn" onclick="askAya('Quanta água bebi?')">Quanta água bebi?</button>
+                </div>
+                <div class="composer">
+                    <input type="text" id="chat-input" placeholder="Escreva para a Aya" aria-label="Mensagem para a Aya" onkeypress="handleEnter(event)" autocomplete="off">
+                    <button class="send" onclick="sendMessage()" aria-label="Enviar mensagem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button>
                 </div>
             </div>
         </section>
     </main>
+</div>
 
-    <!-- MODAIS -->
-    <div class="modal-overlay" id="modal-tarefa" onclick="if(event.target===this)closeModal('modal-tarefa')">
-        <div class="modal">
-            <h2>Nova tarefa</h2>
-            <p class="sub">Vira um compromisso na sua agenda.</p>
-            <form id="form-tarefa" onsubmit="event.preventDefault(); saveTarefa();">
-                <div class="input-group"><label for="tarefa-titulo">Título</label><input type="text" id="tarefa-titulo" maxlength="150" placeholder="Ex: Revisar Ciências" required></div>
-                <div class="input-group"><label for="tarefa-descricao">Descrição (opcional)</label><textarea id="tarefa-descricao" rows="2"></textarea></div>
-                <div class="form-grid">
-                    <div class="input-group"><label for="tarefa-categoria">Categoria</label><select id="tarefa-categoria"></select></div>
-                    <div class="input-group">
-                        <label for="tarefa-prioridade">Prioridade</label>
-                        <select id="tarefa-prioridade"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select>
-                    </div>
-                    <div class="input-group"><label for="tarefa-inicio">Início</label><input type="datetime-local" id="tarefa-inicio" required></div>
-                    <div class="input-group"><label for="tarefa-fim">Fim</label><input type="datetime-local" id="tarefa-fim" required></div>
-                    <div class="input-group"><label for="tarefa-local">Local (opcional)</label><input type="text" id="tarefa-local" maxlength="150"></div>
-                    <div class="input-group"><label for="tarefa-meta">Vincular a uma meta</label><select id="tarefa-meta"></select></div>
-                </div>
-                <label class="check-line"><input type="checkbox" id="tarefa-dia-inteiro"> Dia inteiro (usa só as datas)</label>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-tarefa')">Cancelar</button>
-                    <button type="submit" class="btn">Salvar tarefa</button>
-                </div>
-            </form>
-        </div>
+<!-- MODAIS -->
+<div class="overlay" id="modal-tarefa" onclick="if(event.target===this)closeModal('modal-tarefa')">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t-tarefa">
+        <h2 id="t-tarefa">Nova tarefa</h2>
+        <p class="muted sub">Ela vira um compromisso na sua agenda.</p>
+        <form id="form-tarefa" onsubmit="event.preventDefault(); saveTarefa();">
+            <div class="field"><label for="tarefa-titulo">Título</label><input type="text" id="tarefa-titulo" maxlength="150" placeholder="Ex: revisar funções de matemática" required></div>
+            <div class="field"><label for="tarefa-descricao">Descrição (opcional)</label><textarea id="tarefa-descricao" rows="2"></textarea></div>
+            <div class="grid2">
+                <div class="field"><label for="tarefa-categoria">Categoria</label><select id="tarefa-categoria"></select></div>
+                <div class="field"><label for="tarefa-prioridade">Prioridade</label>
+                    <select id="tarefa-prioridade"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select></div>
+                <div class="field"><label for="tarefa-inicio">Início</label><input type="datetime-local" id="tarefa-inicio" required></div>
+                <div class="field"><label for="tarefa-fim">Fim</label><input type="datetime-local" id="tarefa-fim" required></div>
+                <div class="field"><label for="tarefa-local">Local (opcional)</label><input type="text" id="tarefa-local" maxlength="150"></div>
+                <div class="field"><label for="tarefa-meta">Meta vinculada</label><select id="tarefa-meta"></select></div>
+                <div class="field span2"><label for="tarefa-lembrete">Lembrete</label>
+                    <select id="tarefa-lembrete"><option value="">Sem lembrete</option><option value="0">No horário</option><option value="15">15 minutos antes</option><option value="30">30 minutos antes</option><option value="60">1 hora antes</option><option value="1440">1 dia antes</option></select>
+                    <p class="hint">O lembrete aparece aqui no app enquanto ele estiver aberto.</p></div>
+            </div>
+            <label class="check"><input type="checkbox" id="tarefa-dia-inteiro"> Dia inteiro (usa só as datas)</label>
+            <div class="sheet-actions">
+                <button type="button" class="btn ghost" onclick="closeModal('modal-tarefa')">Cancelar</button>
+                <button type="submit" class="btn">Salvar tarefa</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <div class="modal-overlay" id="modal-habito" onclick="if(event.target===this)closeModal('modal-habito')">
-        <div class="modal">
-            <h2>Novo hábito</h2>
-            <p class="sub">Uma rotina que se repete, com check-in diário.</p>
-            <form id="form-habito" onsubmit="event.preventDefault(); saveHabito();">
-                <div class="input-group"><label for="habito-titulo">Nome do hábito</label><input type="text" id="habito-titulo" maxlength="150" placeholder="Ex: Ler 20 minutos" required></div>
-                <div class="input-group"><label for="habito-descricao">Descrição (opcional)</label><input type="text" id="habito-descricao" maxlength="150"></div>
-                <div class="form-grid">
-                    <div class="input-group"><label for="habito-categoria">Categoria</label><select id="habito-categoria"></select></div>
-                    <div class="input-group">
-                        <label for="habito-tipo">Frequência</label>
-                        <select id="habito-tipo" onchange="toggleDiasHabito()"><option value="diaria">Todos os dias</option><option value="semanal">Dias da semana</option></select>
-                    </div>
+<div class="overlay" id="modal-habito" onclick="if(event.target===this)closeModal('modal-habito')">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t-habito">
+        <h2 id="t-habito">Novo hábito</h2>
+        <p class="muted sub">Uma rotina que se repete, com marcação diária.</p>
+        <form id="form-habito" onsubmit="event.preventDefault(); saveHabito();">
+            <div class="field"><label for="habito-titulo">Nome do hábito</label><input type="text" id="habito-titulo" maxlength="150" placeholder="Ex: ler 20 minutos" required></div>
+            <div class="field"><label for="habito-descricao">Descrição (opcional)</label><input type="text" id="habito-descricao" maxlength="150"></div>
+            <div class="grid2">
+                <div class="field"><label for="habito-categoria">Categoria</label><select id="habito-categoria"></select></div>
+                <div class="field"><label for="habito-tipo">Frequência</label>
+                    <select id="habito-tipo" onchange="toggleDiasHabito()"><option value="diaria">Todos os dias</option><option value="semanal">Dias da semana</option></select></div>
+            </div>
+            <div class="field hidden" id="habito-dias-wrap">
+                <label>Quais dias?</label>
+                <div class="days" id="habito-dias">
+                    <button type="button" class="day-chip" data-d="1" onclick="this.classList.toggle('on')">Seg</button>
+                    <button type="button" class="day-chip" data-d="2" onclick="this.classList.toggle('on')">Ter</button>
+                    <button type="button" class="day-chip" data-d="3" onclick="this.classList.toggle('on')">Qua</button>
+                    <button type="button" class="day-chip" data-d="4" onclick="this.classList.toggle('on')">Qui</button>
+                    <button type="button" class="day-chip" data-d="5" onclick="this.classList.toggle('on')">Sex</button>
+                    <button type="button" class="day-chip" data-d="6" onclick="this.classList.toggle('on')">Sáb</button>
+                    <button type="button" class="day-chip" data-d="7" onclick="this.classList.toggle('on')">Dom</button>
                 </div>
-                <div class="input-group hidden" id="habito-dias-wrap">
-                    <label>Quais dias?</label>
-                    <div class="day-chips" id="habito-dias">
-                        <button type="button" class="day-chip" data-d="1" onclick="this.classList.toggle('on')">Seg</button>
-                        <button type="button" class="day-chip" data-d="2" onclick="this.classList.toggle('on')">Ter</button>
-                        <button type="button" class="day-chip" data-d="3" onclick="this.classList.toggle('on')">Qua</button>
-                        <button type="button" class="day-chip" data-d="4" onclick="this.classList.toggle('on')">Qui</button>
-                        <button type="button" class="day-chip" data-d="5" onclick="this.classList.toggle('on')">Sex</button>
-                        <button type="button" class="day-chip" data-d="6" onclick="this.classList.toggle('on')">Sáb</button>
-                        <button type="button" class="day-chip" data-d="7" onclick="this.classList.toggle('on')">Dom</button>
-                    </div>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-habito')">Cancelar</button>
-                    <button type="submit" class="btn btn-green">Salvar hábito</button>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="sheet-actions">
+                <button type="button" class="btn ghost" onclick="closeModal('modal-habito')">Cancelar</button>
+                <button type="submit" class="btn green">Salvar hábito</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <div class="modal-overlay" id="modal-meta" onclick="if(event.target===this)closeModal('modal-meta')">
-        <div class="modal">
-            <h2>Nova meta</h2>
-            <p class="sub">Defina o objetivo; depois vincule tarefas a ele.</p>
-            <form id="form-meta" onsubmit="event.preventDefault(); saveMeta();">
-                <div class="input-group"><label for="meta-titulo">Meta</label><input type="text" id="meta-titulo" maxlength="150" placeholder="Ex: Passar em Matemática" required></div>
-                <div class="input-group"><label for="meta-descricao">Descrição (opcional)</label><textarea id="meta-descricao" rows="2"></textarea></div>
-                <div class="input-group"><label for="meta-prazo">Prazo (opcional)</label><input type="date" id="meta-prazo"></div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-meta')">Cancelar</button>
-                    <button type="submit" class="btn btn-pink">Salvar meta</button>
-                </div>
-            </form>
-        </div>
+<div class="overlay" id="modal-meta" onclick="if(event.target===this)closeModal('modal-meta')">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t-meta">
+        <h2 id="t-meta">Nova meta</h2>
+        <p class="muted sub">Defina o objetivo e vincule tarefas depois.</p>
+        <form id="form-meta" onsubmit="event.preventDefault(); saveMeta();">
+            <div class="field"><label for="meta-titulo">Meta</label><input type="text" id="meta-titulo" maxlength="150" placeholder="Ex: passar em matemática" required></div>
+            <div class="field"><label for="meta-descricao">Descrição (opcional)</label><textarea id="meta-descricao" rows="2"></textarea></div>
+            <div class="field"><label for="meta-prazo">Prazo (opcional)</label><input type="date" id="meta-prazo"></div>
+            <div class="sheet-actions">
+                <button type="button" class="btn ghost" onclick="closeModal('modal-meta')">Cancelar</button>
+                <button type="submit" class="btn pink">Salvar meta</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <div id="toast-wrap"></div>
+<div class="overlay" id="modal-jornada" onclick="if(event.target===this)closeModal('modal-jornada')">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t-jornada">
+        <h2 id="t-jornada">Jornada de trabalho</h2>
+        <p class="muted sub">Os horários aparecem na linha do dia nos dias que você marcar.</p>
+        <form id="form-jornada" onsubmit="event.preventDefault(); saveJornada();">
+            <div class="grid2">
+                <div class="field"><label for="j-tipo">Vínculo</label>
+                    <select id="j-tipo"><option value="aprendiz">Aprendiz</option><option value="estagiario">Estagiário(a)</option></select></div>
+                <div class="field"><label for="j-empresa">Empresa</label><input type="text" id="j-empresa" maxlength="150" required></div>
+                <div class="field"><label for="j-inicio">Entrada</label><input type="time" id="j-inicio" oninput="updateCarga()" required></div>
+                <div class="field"><label for="j-fim">Saída</label><input type="time" id="j-fim" oninput="updateCarga()" required></div>
+            </div>
+            <p class="carga" id="j-carga" aria-live="polite"></p>
+            <div class="field">
+                <label>Dias da semana</label>
+                <div class="days" id="j-dias">
+                    <button type="button" class="day-chip" data-d="1" onclick="this.classList.toggle('on')">Seg</button>
+                    <button type="button" class="day-chip" data-d="2" onclick="this.classList.toggle('on')">Ter</button>
+                    <button type="button" class="day-chip" data-d="3" onclick="this.classList.toggle('on')">Qua</button>
+                    <button type="button" class="day-chip" data-d="4" onclick="this.classList.toggle('on')">Qui</button>
+                    <button type="button" class="day-chip" data-d="5" onclick="this.classList.toggle('on')">Sex</button>
+                    <button type="button" class="day-chip" data-d="6" onclick="this.classList.toggle('on')">Sáb</button>
+                    <button type="button" class="day-chip" data-d="7" onclick="this.classList.toggle('on')">Dom</button>
+                </div>
+            </div>
+            <div class="grid2">
+                <div class="field"><label for="j-vig-ini">Começa em</label><input type="date" id="j-vig-ini" required></div>
+                <div class="field"><label for="j-vig-fim">Termina em (opcional)</label><input type="date" id="j-vig-fim"></div>
+            </div>
+            <div class="sheet-actions">
+                <button type="button" class="btn ghost" onclick="closeModal('modal-jornada')">Cancelar</button>
+                <button type="submit" class="btn">Salvar jornada</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <script src="script.js"></script>
+<div id="toast-wrap" aria-live="polite"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
