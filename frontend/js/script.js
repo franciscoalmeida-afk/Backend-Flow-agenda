@@ -18,7 +18,7 @@
      Ajustes              -> estudante, jornada_trabalho, jornada_dia
    ===================================================================== */
 
-const PK = {
+   const PK = {
     instituicao: 'id_instituicao', curso: 'id_curso', estudante: 'id_estudante', categoria: 'id_categoria',
     compromisso: 'id_compromisso', recorrencia: 'id_recorrencia', bloco_descompressao: 'id_bloco',
     conversa: 'id_conversa', mensagem: 'id_mensagem', meta: 'id_meta', habito_checkin: 'id_checkin',
