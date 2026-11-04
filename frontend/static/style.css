@@ -4,7 +4,7 @@
    Tinta azul-violeta na lateral, papel frio no conteúdo, cores sólidas
    por categoria. Uma coisa memorável: a linha do dia na tela Hoje.
    ===================================================================== */
-:root {
+   :root {
     --ink: #14123A;
     --ink-line: rgba(255, 255, 255, .12);
     --bg: #F2F3FA;
@@ -45,7 +45,7 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -.02em; line-heig
 .app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
 .app.public { grid-template-columns: 1fr; }
 .app.public .side, .app.public .mobile-top { display: none; }
-.main { width: 100%; max-width: 1140px; margin: 0 auto; padding: 44px clamp(20px, 4vw, 56px) 80px; }
+.main { min-width: 0; width: 100%; max-width: 1140px; margin: 0 auto; padding: 44px clamp(20px, 4vw, 56px) 80px; }
 .app.public .main { max-width: none; padding: 0; }
 .screen { display: none; }
 .screen.active { display: block; animation: fade .2s ease-out; }
@@ -397,7 +397,9 @@ body.turbo-active .aya-av { animation: shake .3s infinite; box-shadow: 0 0 24px 
 /* ---------- Celular ---------- */
 @media (max-width: 900px) {
     :root { --lab: 70px; }
-    .app { grid-template-columns: 1fr; }
+    .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; align-content: start; }
+    .main { min-width: 0; }
+    .head > * { min-width: 0; }
     .side { position: fixed; z-index: 200; top: auto; left: 0; right: 0; bottom: 0; height: auto; flex-direction: row; padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); border-top: 1px solid var(--ink-line); }
     .side .brand, .side-user, #nav-config { display: none; }
     .nav { flex-direction: row; width: 100%; gap: 0; }
