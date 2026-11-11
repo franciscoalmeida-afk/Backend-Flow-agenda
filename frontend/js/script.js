@@ -1,6 +1,4 @@
-/* =====================================================================
-   Flow Agendas - script.js (Versão Integrada com API + Protótipo)
-   ===================================================================== */
+
 
    const API_URL = 'http://127.0.0.1:8000';
 
@@ -12,7 +10,7 @@
    };
    const TABLES = Object.keys(PK).concat(['recorrencia_dia', 'jornada_dia']);
    
-   // O banco local (protótipo) continua aqui para as outras telas não quebrarem
+
    const DB = {
        KEY: 'flow_agendas_db_v2', d: null,
        init() {
@@ -104,10 +102,10 @@
        return 'weak-' + h.toString(16);
    }
    
-   /* ================= ESTADO ================= */
+   
    let state = {
-       user: null,            
-       conversa: null,        
+       user: null,
+       conversa: null,
        focusTime: 0, focusSaved: 0, focusInterval: null, isFocusing: false,
        tarefaFilter: 'aberto'
    };
@@ -124,7 +122,7 @@
        document.querySelectorAll('.js-avatar').forEach(e => { e.textContent = n.charAt(0).toUpperCase(); });
    }
    
-   /* ================= NAVEGAÇÃO ================= */
+   
    const SCREEN_RENDER = {
        'screen-menu': () => renderDashboard(), 'screen-tarefas': () => renderTarefas(), 'screen-habitos': () => renderHabitos(),
        'screen-metas': () => renderMetas(), 'screen-bemestar': () => renderBemestar(), 'screen-config': () => renderConfig()
@@ -153,13 +151,13 @@
        window.scrollTo(0, 0);
    }
    
-   /* ================= INTEGRAÇÃO REAL: LOGIN E CADASTRO ================= */
+   
    async function doLogin() {
        const email = $('login-email').value.trim().toLowerCase();
        const pass = $('login-pass').value;
-       
+   
        if (!email || !pass) { toast('Informe e-mail e senha.', 'err'); return; }
-       
+   
        try {
            const hash = await sha256(pass);
            const res = await fetch(`${API_URL}/login`, {
@@ -167,7 +165,7 @@
                headers: { 'Content-Type': 'application/json' },
                body: JSON.stringify({ email: email, senha_hash: hash })
            });
-           
+   
            if (res.ok) {
                const u = await res.json();
                $('login-pass').value = '';
@@ -184,67 +182,69 @@
    async function doCadastro() {
        const v = id => $(id).value.trim();
        const nome = v('cad-nome'), email = v('cad-email').toLowerCase(), senha = $('cad-senha').value, nasc = v('cad-nasc');
-       const inst = v('cad-inst'), cidade = v('cad-cidade'), uf = v('cad-uf').toUpperCase(), curso = v('cad-curso');
+       const instId = $('cad-inst-id').value;
+       const curso = v('cad-curso');
+       const turnoCurso = $('cad-curso-turno').value;
        const dur = parseInt($('cad-curso-duracao').value, 10);
    
-       if (!nome || !email || !senha || !nasc || !inst || !cidade || !uf || !curso) { toast('Preencha todos os campos.', 'err'); return; }
-       
+       if (!nome || !email || !senha || !nasc || !curso) { toast('Preencha todos os campos.', 'err'); return; }
+       if (!instId) { toast('Escolha sua escola na lista de busca.', 'err'); return; }
+       if (senha.length < 6) { toast('A senha precisa ter ao menos 6 caracteres.', 'err'); return; }
+   
        try {
-           // 1. Criar a Instituição no banco
-           const resInst = await fetch(`${API_URL}/instituicoes`, {
-               method: 'POST', headers: { 'Content-Type': 'application/json' },
-               body: JSON.stringify({ nome: inst, tipo: $('cad-inst-tipo').value, cidade: cidade, uf: uf })
-           });
-           const instData = await resInst.json();
-           if(!resInst.ok) { toast("Erro na Instituição: " + JSON.stringify(instData), 'err'); return; }
+           
+           let cursoId = null;
+           const resBusca = await fetch(`${API_URL}/cursos/buscar?id_instituicao=${instId}&nome=${encodeURIComponent(curso)}&turno=${turnoCurso}`);
+           if (resBusca.ok) {
+               const existente = await resBusca.json();
+               if (existente && existente.id_curso) cursoId = existente.id_curso;
+           }
    
-           // 2. Criar o Curso no banco, usando o ID da Instituição recém-criada
-           const resCurso = await fetch(`${API_URL}/cursos`, {
-               method: 'POST', headers: { 'Content-Type': 'application/json' },
-               body: JSON.stringify({ 
-                   id_instituicao: instData.id_instituicao, 
-                   nome: curso, 
-                   turno: $('cad-curso-turno').value, 
-                   duracao_semestres: dur 
-               })
-           });
-           const cursoData = await resCurso.json();
-           if(!resCurso.ok) { toast("Erro no Curso: " + JSON.stringify(cursoData), 'err'); return; }
+        
+           if (!cursoId) {
+               const resCurso = await fetch(`${API_URL}/cursos`, {
+                   method: 'POST', headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ id_instituicao: parseInt(instId, 10), nome: curso, turno: turnoCurso, duracao_semestres: dur })
+               });
+               const cursoData = await resCurso.json();
+               if (!resCurso.ok) { toast('Erro no curso: ' + JSON.stringify(cursoData), 'err'); return; }
+               cursoId = cursoData.id_curso;
+           }
    
-           // 3. Criar o Estudante no banco, usando o ID do Curso
-           const hash = await sha256(senha);
+           
+           const senhaHash = await sha256(senha);
            const resEst = await fetch(`${API_URL}/estudantes`, {
                method: 'POST', headers: { 'Content-Type': 'application/json' },
                body: JSON.stringify({
-                   id_instituicao: instData.id_instituicao,
-                   id_curso: cursoData.id_curso,
+                   id_instituicao: parseInt(instId, 10),
+                   id_curso: cursoId,
                    nome: nome,
                    data_nascimento: nasc,
                    email: email,
-                   senha_hash: hash,
+                   senha_hash: senhaHash,
                    ano_escolar: $('cad-ano').value,
                    turno_escolar: $('cad-turno-escolar').value
                })
            });
            const estData = await resEst.json();
-           if(!resEst.ok) { toast("Erro no Estudante: " + JSON.stringify(estData), 'err'); return; }
+           if (!resEst.ok) { toast('Erro no estudante: ' + JSON.stringify(estData), 'err'); return; }
    
            toast('Conta criada. Bem-vindo(a) ao Flow.');
            $('form-cadastro').reset();
+           $('cad-inst-id').value = '';
            startSession(estData);
-   
-       } catch (error) {
-           toast("Erro de rede. Verifique o backend.", 'err');
+       } catch (e) {
+           toast('Erro de rede. Verifique o backend.', 'err');
        }
    }
    
    function startSession(u) {
        state.user = u;
-       
-       // Salva o ID na memória local apenas para saber que está logado
-       DB.d.session = u.id_estudante; 
+   
+    
+       DB.d.session = u.id_estudante;
        DB.save();
-       
+   
        setUserUI();
        loadConversa();
        checkLembretes();
@@ -265,10 +265,10 @@
        setUserUI();
    }
    
-   // O resto das funções (renderConfig, tarefas, hábitos, etc.) continua exatamente igual
+
    function renderConfig() {
        const u = state.user;
-       if(!u) return;
+       if (!u) return;
        $('config-name').value = u.nome;
        $('config-email').value = u.email;
        const i = DB.get('instituicao', u.id_instituicao), c = DB.get('curso', u.id_curso);
@@ -347,7 +347,7 @@
    }
    function renderJornadas() {
        const box = $('jornada-list');
-       if(!box) return;
+       if (!box) return;
        const js = DB.where('jornada_trabalho', j => j.id_estudante === uid());
        if (!js.length) { box.innerHTML = '<p class="muted">Nenhuma jornada cadastrada.</p>'; return; }
        box.innerHTML = '<ul class="list">' + js.map(j => {
@@ -439,7 +439,7 @@
            <div class="task-body"><div class="task-title">${esc(c.titulo)}</div>${c.descricao && !compact ? `<div class="task-desc">${esc(c.descricao)}</div>` : ''}<div class="task-meta">${bits.join('')}</div></div>${actions}</li>`;
    }
    function renderTarefas() {
-       const list = $('subject-list'); if(!list) return;
+       const list = $('subject-list'); if (!list) return;
        const f = state.tarefaFilter;
        const rows = minhasTarefas().filter(c => f === 'aberto' ? isOpen(c) : c.status === f);
        rows.sort((x, y) => f === 'aberto' ? x.data_inicio.localeCompare(y.data_inicio) : y.data_inicio.localeCompare(x.data_inicio));
@@ -482,7 +482,7 @@
    function deleteHabito(id) { if (confirm('Excluir este hábito e todo o histórico dele?')) { DB.remove('compromisso', id); toast('Hábito excluído.'); renderHabitos(); renderDashboard(); } }
    const streakTxt = n => `${n} ${plural(n, 'dia seguido', 'dias seguidos')}`;
    function renderHabitos() {
-       const list = $('habit-list'); if(!list) return;
+       const list = $('habit-list'); if (!list) return;
        const hs = meusHabitos();
        if (!hs.length) { list.innerHTML = `<div class="empty"><strong>Nenhum hábito ainda</strong><p>Comece com algo pequeno.</p><button class="btn green" onclick="openHabito()">${ICON.plus}Novo hábito</button></div>`; return; }
        const LET = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
@@ -500,7 +500,7 @@
    function toggleMeta(id) { const m = DB.get('meta', id); if (!m) return; if (m.status === 'ativa') { DB.update('meta', id, { status: 'concluida', progresso_manual: 100 }); toast('Meta concluída. Parabéns!'); } else DB.update('meta', id, { status: 'ativa' }); renderMetas(); renderDashboard(); }
    function deleteMeta(id) { if (confirm('Excluir esta meta? As tarefas vinculadas continuam existindo.')) { DB.remove('meta', id); toast('Meta excluída.'); renderMetas(); renderDashboard(); renderTarefas(); } }
    function renderMetas() {
-       const list = $('meta-list'); if(!list) return;
+       const list = $('meta-list'); if (!list) return;
        const ms = DB.where('meta', m => m.id_estudante === uid() && m.status !== 'cancelada').sort((a, b) => (a.status === b.status ? (a.prazo || '9999').localeCompare(b.prazo || '9999') : (a.status === 'ativa' ? -1 : 1)));
        if (!ms.length) { list.innerHTML = `<div class="empty"><strong>Nenhuma meta ainda</strong><p>Defina onde quer chegar.</p><button class="btn pink" onclick="openMeta()">${ICON.plus}Nova meta</button></div>`; return; }
        list.innerHTML = '<ul class="list panel">' + ms.map(m => {
@@ -551,7 +551,7 @@
    function waterHabit(create) { let c = DB.find('compromisso', x => x.id_estudante === uid() && x.titulo === WATER_TITLE); if (!c && create) c = criarHabitoBase(WATER_TITLE, 'Meta: 2000 ml por dia', catByName('Saúde').id_categoria, 'diaria', []); return c; }
    function waterToday() { if (!state.user) return 0; const c = waterHabit(false); if (!c) return 0; const k = checkinOf(c, todayStr()); return k ? k.quantidade : 0; }
    function addWater() { const cur = waterToday(); if (cur < 2000) { const c = waterHabit(true), k = checkinOf(c, todayStr()); if (k) DB.update('habito_checkin', k.id_checkin, { quantidade: cur + 250 }); else DB.insert('habito_checkin', { id_compromisso: c.id_compromisso, data: todayStr(), quantidade: 250, criado_em: fmtTs(new Date()) }); updateWaterUI(); } }
-   function updateWaterUI() { if(!$('water-meter')) return; const w = waterToday(); $('water-meter').innerHTML = meterHTML(Math.floor(w / 250), 8); $('water-text').textContent = `${fmtL(w)} de 2 L`; }
+   function updateWaterUI() { if (!$('water-meter')) return; const w = waterToday(); $('water-meter').innerHTML = meterHTML(Math.floor(w / 250), 8); $('water-text').textContent = `${fmtL(w)} de 2 L`; }
    function blocoHoje(tipo) { return DB.where('bloco_descompressao', b => b.tipo === tipo).map(b => ({ b, c: DB.get('compromisso', b.id_compromisso) })).find(x => x.c && x.c.id_estudante === uid() && x.c.data_inicio.slice(0, 10) === todayStr()); }
    function addBloco(tipo, titulo, minutos, concluidoQuando) {
        const x = blocoHoje(tipo);
@@ -561,7 +561,7 @@
    const sleepMinutes = () => { const x = blocoHoje('sono'); return x ? x.b.duracao_min : 0; };
    const focusTodayMin = () => { const x = blocoHoje('offline'); return x ? x.b.duracao_min : 0; };
    function addSleep() { if (sleepMinutes() < 480) { addBloco('sono', 'Sono', 60, 480); updateSleepUI(); } }
-   function updateSleepUI() { if(!$('sleep-meter')) return; const h = sleepMinutes() / 60; $('sleep-meter').innerHTML = meterHTML(Math.floor(h), 8); $('sleep-text').textContent = `${fmtH(h)} de 8 h`; }
+   function updateSleepUI() { if (!$('sleep-meter')) return; const h = sleepMinutes() / 60; $('sleep-meter').innerHTML = meterHTML(Math.floor(h), 8); $('sleep-text').textContent = `${fmtH(h)} de 8 h`; }
    function saveFocus() { const add = Math.floor(state.focusTime / 60) - Math.floor(state.focusSaved / 60); if (add > 0) { addBloco('offline', 'Foco / Meditação', add, 1); state.focusSaved = state.focusTime; } }
    const clock = s => `${pad(Math.floor(s / 60))}:${pad(s % 60)}`;
    function toggleFocus() {
@@ -576,12 +576,12 @@
    const fmtMsg = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
    const RISCO = ['me matar', 'suicid', 'quero morrer', 'não quero mais viver', 'nao quero mais viver', 'me machucar', 'automutila', 'acabar com tudo', 'sumir para sempre'];
    const detectRisco = t => RISCO.some(k => t.toLowerCase().includes(k));
-   function appendMsg(role, html) { const box = $('chat-messages'); if(!box) return; const d = document.createElement('div'); d.className = 'msg ' + (role === 'user' ? 'user' : 'aya'); d.innerHTML = `<div class="bub">${html}</div>`; box.appendChild(d); box.scrollTop = box.scrollHeight; }
-   function loadConversa() { const abertas = DB.where('conversa', c => c.id_estudante === uid() && !c.encerrada_em); state.conversa = abertas.length ? abertas[abertas.length - 1] : null; if($('chat-messages')) $('chat-messages').innerHTML = ''; appendMsg('aya', AYA_GREETING); if (state.conversa) { DB.where('mensagem', m => m.id_conversa === state.conversa.id_conversa && m.papel !== 'system').forEach(m => appendMsg(m.papel, fmtMsg(m.conteudo))); } }
+   function appendMsg(role, html) { const box = $('chat-messages'); if (!box) return; const d = document.createElement('div'); d.className = 'msg ' + (role === 'user' ? 'user' : 'aya'); d.innerHTML = `<div class="bub">${html}</div>`; box.appendChild(d); box.scrollTop = box.scrollHeight; }
+   function loadConversa() { const abertas = DB.where('conversa', c => c.id_estudante === uid() && !c.encerrada_em); state.conversa = abertas.length ? abertas[abertas.length - 1] : null; if ($('chat-messages')) $('chat-messages').innerHTML = ''; appendMsg('aya', AYA_GREETING); if (state.conversa) { DB.where('mensagem', m => m.id_conversa === state.conversa.id_conversa && m.papel !== 'system').forEach(m => appendMsg(m.papel, fmtMsg(m.conteudo))); } }
    function ensureConversa(primeiraMsg) { if (!state.conversa) { state.conversa = DB.insert('conversa', { id_estudante: uid(), titulo: primeiraMsg.slice(0, 60), contexto: { origem: 'frontend_demo' }, iniciada_em: fmtTs(new Date()), encerrada_em: null }); } return state.conversa; }
    function saveMsg(papel, conteudo, risco) { DB.insert('mensagem', { id_conversa: state.conversa.id_conversa, papel, conteudo, tokens: null, modelo_usado: papel === 'assistant' ? 'aya-demo-local' : null, risco_detectado: !!risco, criada_em: fmtTs(new Date()) }); }
    function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
-   function askAya(text) { if($('chat-input')) { $('chat-input').value = text; sendMessage(); } }
+   function askAya(text) { if ($('chat-input')) { $('chat-input').value = text; sendMessage(); } }
    function sendMessage() {
        const input = $('chat-input'); const text = input.value.trim(); if (text === '' || !state.user) return;
        ensureConversa(text); const risco = detectRisco(text); saveMsg('user', text, risco); appendMsg('user', esc(text)); input.value = '';
@@ -602,9 +602,61 @@
        }, 900);
    }
    
-   /* ================= INICIALIZAÇÃO ================= */
+   
+   let todasInstituicoes = [];
+   
+   async function carregarInstituicoes() {
+       try {
+           const res = await fetch(`${API_URL}/instituicoes`);
+           if (res.ok) todasInstituicoes = await res.json();
+       } catch (e) { console.error(e); }
+   }
+   
+   function filtrarInstituicoes() {
+       const termo = $('cad-busca-inst').value.trim().toLowerCase();
+       const listaDiv = $('lista-instituicoes');
+       listaDiv.innerHTML = '';
+       $('cad-inst-id').value = '';
+   
+       if (termo.length < 2) { listaDiv.classList.add('hidden'); return; }
+   
+       const filtradas = todasInstituicoes.filter(i =>
+           (i.nome || '').toLowerCase().includes(termo) || (i.cidade || '').toLowerCase().includes(termo)
+       );
+   
+       if (!filtradas.length) {
+           listaDiv.innerHTML = '<div class="inst-vazio">Nenhuma escola encontrada.</div>';
+       } else {
+           filtradas.slice(0, 30).forEach(inst => {
+               const item = document.createElement('div');
+               item.className = 'inst-item';
+               item.innerHTML = `<strong>${esc(inst.nome)}</strong><span>${esc(inst.cidade)} · ${esc(inst.uf)}</span>`;
+               item.onclick = () => {
+                   $('cad-busca-inst').value = inst.nome;
+                   $('cad-inst-id').value = inst.id_instituicao;
+                   listaDiv.classList.add('hidden');
+               };
+               listaDiv.appendChild(item);
+           });
+       }
+       listaDiv.classList.remove('hidden');
+   }
+   
+   (function iniciarBuscaInstituicao() {
+       carregarInstituicoes();
+       const busca = $('cad-busca-inst');
+       if (!busca) return;
+       busca.addEventListener('input', filtrarInstituicoes);
+       document.addEventListener('click', e => {
+           if (!busca.contains(e.target) && !$('lista-instituicoes').contains(e.target)) {
+               $('lista-instituicoes').classList.add('hidden');
+           }
+       });
+   })();
+   
+
    DB.init();
    setInterval(() => { if (state.user && $('screen-menu').classList.contains('active')) renderRail(); }, 60000);
    setInterval(checkLembretes, 20000);
-   // Ao invés de checar o localStorage antigo, começamos na tela de login para forçar o login via API
+
    navTo('screen-login');
