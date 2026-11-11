@@ -83,7 +83,7 @@
             <div class="signup">
                 <button class="link back" onclick="navTo('screen-login')">Voltar para entrar</button>
                 <h1>Criar conta</h1>
-                <p class="muted">Seus dados, sua escola e seu curso. Tudo fica salvo só neste navegador.</p>
+                <p class="muted">Seus dados, sua escola e seu curso.</p>
                 <form id="form-cadastro" onsubmit="event.preventDefault(); doCadastro();">
                     <div class="grid2">
                         <h2 class="form-sec first">Você</h2>
@@ -97,11 +97,12 @@
                             <select id="cad-turno-escolar"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select></div>
 
                         <h2 class="form-sec">Instituição</h2>
-                        <div class="field span2"><label for="cad-inst">Nome da instituição</label><input type="text" id="cad-inst" maxlength="150" required></div>
-                        <div class="field"><label for="cad-inst-tipo">Tipo</label>
-                            <select id="cad-inst-tipo"><option value="escola">Escola</option><option value="empresa">Empresa</option><option value="ong">ONG</option><option value="outro">Outro</option></select></div>
-                        <div class="field"><label for="cad-cidade">Cidade</label><input type="text" id="cad-cidade" maxlength="100" required></div>
-                        <div class="field"><label for="cad-uf">UF</label><input type="text" id="cad-uf" maxlength="2" placeholder="PR" required style="text-transform:uppercase"></div>
+                        <div class="field span2" style="position: relative;">
+                            <label for="cad-busca-inst">Sua escola/instituição</label>
+                            <input type="text" id="cad-busca-inst" placeholder="Digite o nome da sua escola..." autocomplete="off">
+                            <input type="hidden" id="cad-inst-id">
+                            <div id="lista-instituicoes" class="hidden"></div>
+                        </div>
 
                         <h2 class="form-sec">Curso</h2>
                         <div class="field span2"><label for="cad-curso">Nome do curso</label><input type="text" id="cad-curso" maxlength="150" required></div>
