@@ -98,6 +98,24 @@ def criar_curso(curso: schemas.CursoCreate):
 def listar_cursos():
     return supabase.table("curso").select("*, instituicao(*)").execute().data
 
+# Busca um curso pelo trio instituição + nome + turno (usada no cadastro para não duplicar cursos)
+@app.get("/cursos/buscar", tags=["Cursos"])
+def buscar_curso(id_instituicao: int, nome: str, turno: str):
+    # Escapa os curingas do LIKE para o ilike funcionar como "igual, sem diferenciar maiúsculas"
+    nome_seguro = nome.strip().replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    resposta = (
+        supabase.table("curso")
+        .select("*")
+        .eq("id_instituicao", id_instituicao)
+        .ilike("nome", nome_seguro)
+        .eq("turno", turno)
+        .limit(1)
+        .execute()
+    )
+    if resposta.data:
+        return resposta.data[0]
+    return None
+
 @app.put("/cursos/{id_curso}", tags=["Cursos"])
 def atualizar_curso(id_curso: int, curso: schemas.CursoCreate):
     resposta = supabase.table("curso").update(curso.model_dump(mode="json")).eq("id_curso", id_curso).execute()
@@ -118,7 +136,9 @@ def deletar_curso(id_curso: int):
 @app.post("/estudantes", status_code=status.HTTP_201_CREATED, tags=["Estudantes"])
 def criar_estudante(est: schemas.EstudanteCreate):
     resposta = supabase.table("estudante").insert(est.model_dump(mode="json")).execute()
-    return resposta.data[0]
+    estudante = resposta.data[0]
+    estudante.pop("senha_hash", None)  # não devolve o hash da senha para o frontend
+    return estudante
 
 @app.get("/estudantes", tags=["Estudantes"])
 def listar_estudantes():
