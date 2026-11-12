@@ -98,6 +98,18 @@ def criar_curso(curso: schemas.CursoCreate):
 def listar_cursos():
     return supabase.table("curso").select("*, instituicao(*)").execute().data
 
+# Lista os cursos de uma instituição (alimenta o select de curso no cadastro)
+@app.get("/cursos/por_instituicao/{id_instituicao}", tags=["Cursos"])
+def listar_cursos_por_instituicao(id_instituicao: int):
+    return (
+        supabase.table("curso")
+        .select("*")
+        .eq("id_instituicao", id_instituicao)
+        .order("nome")
+        .execute()
+        .data
+    )
+
 # Busca um curso pelo trio instituição + nome + turno (usada no cadastro para não duplicar cursos)
 @app.get("/cursos/buscar", tags=["Cursos"])
 def buscar_curso(id_instituicao: int, nome: str, turno: str):
