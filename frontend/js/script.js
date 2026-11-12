@@ -1,4 +1,6 @@
-
+/* =====================================================================
+   Flow Agendas - script.js (Versão Integrada com API + Protótipo)
+   ===================================================================== */
 
    const API_URL = 'http://127.0.0.1:8000';
 
@@ -10,7 +12,7 @@
    };
    const TABLES = Object.keys(PK).concat(['recorrencia_dia', 'jornada_dia']);
    
-
+   // O banco local (protótipo) continua aqui para as outras telas não quebrarem
    const DB = {
        KEY: 'flow_agendas_db_v2', d: null,
        init() {
@@ -102,7 +104,7 @@
        return 'weak-' + h.toString(16);
    }
    
-   
+   /* ================= ESTADO ================= */
    let state = {
        user: null,
        conversa: null,
@@ -122,7 +124,7 @@
        document.querySelectorAll('.js-avatar').forEach(e => { e.textContent = n.charAt(0).toUpperCase(); });
    }
    
-   
+   /* ================= NAVEGAÇÃO ================= */
    const SCREEN_RENDER = {
        'screen-menu': () => renderDashboard(), 'screen-tarefas': () => renderTarefas(), 'screen-habitos': () => renderHabitos(),
        'screen-metas': () => renderMetas(), 'screen-bemestar': () => renderBemestar(), 'screen-config': () => renderConfig()
@@ -151,7 +153,7 @@
        window.scrollTo(0, 0);
    }
    
-   
+   /* ================= INTEGRAÇÃO REAL: LOGIN E CADASTRO ================= */
    async function doLogin() {
        const email = $('login-email').value.trim().toLowerCase();
        const pass = $('login-pass').value;
@@ -183,41 +185,20 @@
        const v = id => $(id).value.trim();
        const nome = v('cad-nome'), email = v('cad-email').toLowerCase(), senha = $('cad-senha').value, nasc = v('cad-nasc');
        const instId = $('cad-inst-id').value;
-       const curso = v('cad-curso');
-       const turnoCurso = $('cad-curso-turno').value;
-       const dur = parseInt($('cad-curso-duracao').value, 10);
+       const cursoId = $('cad-curso').value;
    
-       if (!nome || !email || !senha || !nasc || !curso) { toast('Preencha todos os campos.', 'err'); return; }
+       if (!nome || !email || !senha || !nasc) { toast('Preencha todos os campos.', 'err'); return; }
        if (!instId) { toast('Escolha sua escola na lista de busca.', 'err'); return; }
+       if (!cursoId) { toast('Escolha o seu curso.', 'err'); return; }
        if (senha.length < 6) { toast('A senha precisa ter ao menos 6 caracteres.', 'err'); return; }
    
        try {
-           
-           let cursoId = null;
-           const resBusca = await fetch(`${API_URL}/cursos/buscar?id_instituicao=${instId}&nome=${encodeURIComponent(curso)}&turno=${turnoCurso}`);
-           if (resBusca.ok) {
-               const existente = await resBusca.json();
-               if (existente && existente.id_curso) cursoId = existente.id_curso;
-           }
-   
-        
-           if (!cursoId) {
-               const resCurso = await fetch(`${API_URL}/cursos`, {
-                   method: 'POST', headers: { 'Content-Type': 'application/json' },
-                   body: JSON.stringify({ id_instituicao: parseInt(instId, 10), nome: curso, turno: turnoCurso, duracao_semestres: dur })
-               });
-               const cursoData = await resCurso.json();
-               if (!resCurso.ok) { toast('Erro no curso: ' + JSON.stringify(cursoData), 'err'); return; }
-               cursoId = cursoData.id_curso;
-           }
-   
-           
            const senhaHash = await sha256(senha);
            const resEst = await fetch(`${API_URL}/estudantes`, {
                method: 'POST', headers: { 'Content-Type': 'application/json' },
                body: JSON.stringify({
                    id_instituicao: parseInt(instId, 10),
-                   id_curso: cursoId,
+                   id_curso: parseInt(cursoId, 10),
                    nome: nome,
                    data_nascimento: nasc,
                    email: email,
@@ -232,6 +213,7 @@
            toast('Conta criada. Bem-vindo(a) ao Flow.');
            $('form-cadastro').reset();
            $('cad-inst-id').value = '';
+           resetCursos();
            startSession(estData);
        } catch (e) {
            toast('Erro de rede. Verifique o backend.', 'err');
@@ -241,7 +223,7 @@
    function startSession(u) {
        state.user = u;
    
-    
+       // Salva o ID na memória local apenas para saber que está logado
        DB.d.session = u.id_estudante;
        DB.save();
    
@@ -265,7 +247,7 @@
        setUserUI();
    }
    
-
+   // O resto das funções (renderConfig, tarefas, hábitos, etc.) continua exatamente igual
    function renderConfig() {
        const u = state.user;
        if (!u) return;
@@ -602,7 +584,7 @@
        }, 900);
    }
    
-   
+   /* ================= BUSCA DE INSTITUIÇÃO NO CADASTRO ================= */
    let todasInstituicoes = [];
    
    async function carregarInstituicoes() {
@@ -612,11 +594,44 @@
        } catch (e) { console.error(e); }
    }
    
+   const TURNO_CURSO = { manha: 'Manhã', tarde: 'Tarde', noite: 'Noite', integral: 'Integral' };
+   
+   function resetCursos() {
+       const sel = $('cad-curso');
+       if (!sel) return;
+       sel.innerHTML = '<option value="">Escolha a escola primeiro</option>';
+       sel.disabled = false;
+   }
+   
+   async function carregarCursosDaEscola(idInstituicao) {
+       const sel = $('cad-curso');
+       sel.innerHTML = '<option value="">Carregando cursos...</option>';
+       sel.disabled = true;
+       try {
+           const res = await fetch(`${API_URL}/cursos/por_instituicao/${idInstituicao}`);
+           if (String($('cad-inst-id').value) !== String(idInstituicao)) return; // a pessoa já trocou de escola
+           const cursos = res.ok ? await res.json() : [];
+           if (!cursos.length) {
+               sel.innerHTML = '<option value="">Nenhum curso cadastrado nesta escola.</option>';
+               return;
+           }
+           sel.innerHTML = '<option value="">Selecione o curso</option>' + cursos.map(c => {
+               const turno = TURNO_CURSO[c.turno] || c.turno;
+               return `<option value="${c.id_curso}">${esc(c.nome)} (${esc(turno)}, ${c.duracao_semestres} semestres)</option>`;
+           }).join('');
+           sel.disabled = false;
+       } catch (e) {
+           sel.innerHTML = '<option value="">Não foi possível carregar os cursos.</option>';
+           console.error(e);
+       }
+   }
+   
    function filtrarInstituicoes() {
        const termo = $('cad-busca-inst').value.trim().toLowerCase();
        const listaDiv = $('lista-instituicoes');
        listaDiv.innerHTML = '';
-       $('cad-inst-id').value = '';
+       $('cad-inst-id').value = ''; // digitou de novo: a escolha anterior deixa de valer
+       resetCursos();
    
        if (termo.length < 2) { listaDiv.classList.add('hidden'); return; }
    
@@ -635,6 +650,7 @@
                    $('cad-busca-inst').value = inst.nome;
                    $('cad-inst-id').value = inst.id_instituicao;
                    listaDiv.classList.add('hidden');
+                   carregarCursosDaEscola(inst.id_instituicao);
                };
                listaDiv.appendChild(item);
            });
@@ -654,9 +670,9 @@
        });
    })();
    
-
+   /* ================= INICIALIZAÇÃO ================= */
    DB.init();
    setInterval(() => { if (state.user && $('screen-menu').classList.contains('active')) renderRail(); }, 60000);
    setInterval(checkLembretes, 20000);
-
+   // Ao invés de checar o localStorage antigo, começamos na tela de login para forçar o login via API
    navTo('screen-login');
