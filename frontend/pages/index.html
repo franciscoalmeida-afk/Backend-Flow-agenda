@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#14123A">
     <title>Flow Agendas</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314123A'/%3E%3Crect x='6' y='10' width='8' height='12' rx='2' fill='%237C72FF'/%3E%3Crect x='15' y='10' width='4' height='12' rx='2' fill='%23E0287D'/%3E%3Crect x='20' y='10' width='3' height='12' rx='1.5' fill='%231FB6DB'/%3E%3Crect x='24' y='10' width='2.5' height='12' rx='1.25' fill='%232FD39A'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,6 +25,8 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Hoje</span></button>
             <button class="nav-btn" id="nav-tarefas" onclick="navTo('screen-tarefas', 'nav-tarefas')">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M3 6l1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg><span>Tarefas</span></button>
+            <button class="nav-btn" id="nav-estudos" onclick="navTo('screen-estudos', 'nav-estudos')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Estudos</span></button>
             <button class="nav-btn" id="nav-habitos" onclick="navTo('screen-habitos', 'nav-habitos')">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg><span>Hábitos</span></button>
             <button class="nav-btn" id="nav-metas" onclick="navTo('screen-metas', 'nav-metas')">
@@ -32,6 +35,8 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 9 2.5C21 13.5 17 17 12 21z"/></svg><span>Bem-estar</span></button>
             <button class="nav-btn" id="nav-aya" onclick="navTo('screen-aya', 'nav-aya')">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Aya</span></button>
+            <button class="nav-btn" id="nav-categorias" onclick="navTo('screen-categorias', 'nav-categorias')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1"/></svg><span>Categorias</span></button>
             <button class="nav-btn" id="nav-config" onclick="navTo('screen-config', 'nav-config')">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M19 6h1M4 12h3M13 12h7M4 18h11M21 18h-1"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Ajustes</span></button>
         </nav>
@@ -105,7 +110,7 @@
                         </div>
 
                         <h2 class="form-sec">Curso</h2>
-                        <div class="field span2"><label for="cad-curso">Nome do curso</label>
+                        <div class="field span2"><label for="cad-curso">Seu curso</label>
                             <select id="cad-curso" required><option value="">Escolha a escola primeiro</option></select></div>
                     </div>
                     <div class="form-actions"><button type="submit" class="btn">Criar conta</button></div>
@@ -159,6 +164,31 @@
             <div id="subject-list"></div>
         </section>
 
+        <!-- ESTUDOS -->
+        <section id="screen-estudos" class="screen">
+            <div class="head">
+                <div>
+                    <h1>Estudos</h1>
+                    <p>Conteúdos do Ensino Médio, PAS-UEM e vestibulares. Marque o que já estudou ou agende na sua rotina.</p>
+                </div>
+                <div class="head-actions">
+                    <button class="btn pink" type="button" onclick="criarMetaDaTrilha()">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Criar meta desta etapa
+                    </button>
+                </div>
+            </div>
+
+            <div class="tabs" role="tablist">
+                <button class="tab" id="tab-estudo-1_ano" type="button" onclick="mudarAbaEstudos('1_ano')">1º Ano · PAS 1</button>
+                <button class="tab" id="tab-estudo-2_ano" type="button" onclick="mudarAbaEstudos('2_ano')">2º Ano · PAS 2</button>
+                <button class="tab" id="tab-estudo-3_ano" type="button" onclick="mudarAbaEstudos('3_ano')">3º Ano · PAS 3</button>
+                <button class="tab" id="tab-estudo-enem" type="button" onclick="mudarAbaEstudos('enem')">ENEM & Vestibulares</button>
+            </div>
+
+            <div class="panel study-banner" id="estudos-resumo"></div>
+            <div class="study-grid" id="estudos-lista"></div>
+        </section>
+
         <!-- HÁBITOS -->
         <section id="screen-habitos" class="screen">
             <div class="head">
@@ -179,25 +209,105 @@
 
         <!-- BEM-ESTAR -->
         <section id="screen-bemestar" class="screen">
-            <div class="head"><div><h1>Bem-estar</h1><p>Registre água, sono e foco do dia.</p></div></div>
-            <div class="panel wells">
-                <div class="well">
-                    <div class="well-name"><h2>Água</h2><p>Meta de 8 copos de 250 ml.</p></div>
-                    <div><div class="meter water" id="water-meter"></div><p class="well-read" id="water-text">0 L de 2 L</p></div>
-                    <button class="btn cyan" onclick="addWater()">+ 250 ml</button>
+            <div class="head">
+                <div>
+                    <h1>Bem-estar</h1>
+                    <p>Equilibre sua energia entre estudo e trabalho com metas diárias e pausas guiadas.</p>
                 </div>
-                <div class="well">
-                    <div class="well-name"><h2>Sono</h2><p>Meta de 8 horas.</p></div>
-                    <div><div class="meter sleep" id="sleep-meter"></div><p class="well-read" id="sleep-text">0 h de 8 h</p></div>
-                    <button class="btn pink" onclick="addSleep()">+ 1 h</button>
+            </div>
+
+            <div class="well-grid">
+                <article class="panel well-card is-water">
+                    <div class="well-top">
+                        <div>
+                            <span class="well-badge">Hidratação</span>
+                            <h2>Água</h2>
+                        </div>
+                        <span class="well-pct" id="water-pct">0%</span>
+                    </div>
+                    <div class="meter water" id="water-meter"></div>
+                    <p class="well-read" id="water-text">0 L de 2 L</p>
+                    <div class="well-actions">
+                        <button class="btn ghost sm" type="button" onclick="subWater()" title="Remover 250 ml">- 250 ml</button>
+                        <button class="btn cyan sm grow" type="button" onclick="addWater()">+ 250 ml</button>
+                    </div>
+                </article>
+
+                <article class="panel well-card is-sleep">
+                    <div class="well-top">
+                        <div>
+                            <span class="well-badge">Recuperação</span>
+                            <h2>Sono</h2>
+                        </div>
+                        <span class="well-pct" id="sleep-pct">0%</span>
+                    </div>
+                    <div class="meter sleep" id="sleep-meter"></div>
+                    <p class="well-read" id="sleep-text">0 h de 8 h</p>
+                    <div class="well-actions">
+                        <button class="btn pink sm block" type="button" onclick="addSleep()">+ 1 h de sono</button>
+                    </div>
+                </article>
+
+                <article class="panel well-card is-focus">
+                    <div class="well-top">
+                        <div>
+                            <span class="well-badge">Concentração</span>
+                            <h2>Foco & Pausa</h2>
+                        </div>
+                        <span class="well-pct" id="focus-today">0 min hoje</span>
+                    </div>
+                    <div class="focus-presets" role="group" aria-label="Duração do foco">
+                        <button type="button" class="preset-btn active" data-min="5" onclick="setFocusPreset(5)">5 min</button>
+                        <button type="button" class="preset-btn" data-min="15" onclick="setFocusPreset(15)">15 min</button>
+                        <button type="button" class="preset-btn" data-min="25" onclick="setFocusPreset(25)">25 min</button>
+                    </div>
+                    <div class="clock" id="focus-clock">05:00</div>
+                    <div class="bar thick"><i id="focus-bar" style="width:0%"></i></div>
+                    <p class="well-read" id="focus-text">Pronto para focar por 5 minutos.</p>
+                    <div class="well-actions">
+                        <button class="btn green sm block" id="btn-focus" type="button" onclick="toggleFocus()">Iniciar foco</button>
+                    </div>
+                </article>
+            </div>
+
+            <div class="panel wellness-hub">
+                <div class="hub-head">
+                    <div>
+                        <h2>Vídeo-aulas & Guias Antiestresse</h2>
+                        <p class="muted">Conteúdos rápidos para aliviar a sobrecarga, melhorar o foco e recuperar o fôlego.</p>
+                    </div>
+                    <div class="tabs" role="tablist">
+                        <button class="tab active" type="button" onclick="filterBemestarConteudo('todos', this)">Todos</button>
+                        <button class="tab" type="button" onclick="filterBemestarConteudo('desestresse', this)">Desestresse</button>
+                        <button class="tab" type="button" onclick="filterBemestarConteudo('concentracao', this)">Concentração</button>
+                    </div>
                 </div>
-                <div class="well">
-                    <div class="well-name"><h2>Foco e meditação</h2><p>Sessões de 5 minutos.</p></div>
-                    <div><div class="clock" id="focus-clock">00:00</div>
-                        <div class="bar thick"><i id="focus-bar" style="width:0%"></i></div>
-                        <p class="well-read" id="focus-text">Inicie para focar por 5 minutos.</p></div>
-                    <button class="btn green" id="btn-focus" onclick="toggleFocus()">Iniciar</button>
-                </div>
+                <div id="wellness-cards" class="wellness-grid"></div>
+            </div>
+        </section>
+
+        <!-- CATEGORIAS -->
+        <section id="screen-categorias" class="screen">
+            <div class="head">
+                <div><h1>Categorias</h1><p>As categorias organizam suas tarefas por cor e pelo nível de energia que cada uma exige.</p></div>
+            </div>
+
+            <div class="panel cat-form">
+                <h2>Nova categoria</h2>
+                <form id="form-categoria" onsubmit="saveCategoria(event)">
+                    <div class="grid2">
+                        <div class="field span2"><label for="categoria-nome">Nome</label><input type="text" id="categoria-nome" maxlength="30" placeholder="Ex: Faculdade" required></div>
+                        <div class="field"><label for="categoria-cor">Cor</label><input type="color" id="categoria-cor" value="#4B3FE4" required></div>
+                        <div class="field"><label for="categoria-peso">Peso de energia (1 a 5)</label><input type="number" id="categoria-peso" min="1" max="5" value="3" required>
+                            <p class="hint">1 é uma atividade leve; 5 exige muita energia.</p></div>
+                    </div>
+                    <div class="form-actions"><button type="submit" class="btn">Salvar categoria</button></div>
+                </form>
+            </div>
+
+            <div class="panel cat-list">
+                <div class="cat-list-head"><h2>Suas categorias</h2><span class="cat-count" id="cat-count"></span></div>
+                <div id="lista-categorias" class="cat-grid"></div>
             </div>
         </section>
 
@@ -223,6 +333,11 @@
                     <div class="set-h"><div><h2>Jornada de trabalho</h2><p class="muted">Aparece na linha do dia, na tela Hoje.</p></div>
                         <button class="btn ghost sm" onclick="openJornada()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Adicionar jornada</button></div>
                     <div id="jornada-list"></div>
+                </div>
+
+                <div class="set-sec">
+                    <div class="set-h"><div><h2>Categorias</h2><p class="muted">Crie e organize as categorias das suas tarefas.</p></div>
+                        <button class="btn ghost sm" onclick="navTo('screen-categorias', 'nav-categorias')">Gerenciar categorias</button></div>
                 </div>
 
                 <div class="set-sec">
@@ -377,6 +492,20 @@
                 <button type="submit" class="btn">Salvar jornada</button>
             </div>
         </form>
+    </div>
+</div>
+
+<div class="overlay" id="modal-conteudo" onclick="if(event.target===this)closeModal('modal-conteudo')">
+    <div class="sheet sheet-wide" role="dialog" aria-modal="true" aria-labelledby="t-conteudo">
+        <span class="well-badge" id="conteudo-tag">Guia</span>
+        <h2 id="t-conteudo" style="margin-top:8px;">Título do conteúdo</h2>
+        <p class="muted sub" id="conteudo-sub">Duração · Categoria</p>
+        <div id="conteudo-media" class="video-wrap hidden"></div>
+        <div id="conteudo-texto" class="guide-body"></div>
+        <div class="sheet-actions">
+            <button type="button" class="btn ghost" onclick="closeModal('modal-conteudo')">Fechar</button>
+            <button type="button" class="btn green hidden" id="btn-concluir-doc">Marcar guia como lido</button>
+        </div>
     </div>
 </div>
 
