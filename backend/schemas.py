@@ -2,27 +2,24 @@ from pydantic import BaseModel, Field
 from datetime import date, datetime
 from typing import Optional
 
-# ==========================================
-# INSTITUIÇÃO
-# ==========================================
+# =====================================================================
+# MODELOS DE INSTITUIÇÃO E CURSO (CADASTRO ESCOLAR)
+# =====================================================================
 class InstituicaoCreate(BaseModel):
     nome: str
     tipo: str
     cidade: str
     uf: str
 
-# ==========================================
-# CURSO
-# ==========================================
 class CursoCreate(BaseModel):
     id_instituicao: int
     nome: str
     turno: str
     duracao_semestres: int
 
-# ==========================================
-# ESTUDANTE
-# ==========================================
+# =====================================================================
+# MODELOS DE ESTUDANTE E LOGIN (AUTENTICAÇÃO E PERFIL)
+# =====================================================================
 class EstudanteCreate(BaseModel):
     id_instituicao: int
     id_curso: Optional[int] = None
@@ -38,16 +35,13 @@ class EstudanteResponse(BaseModel):
     nome: str
     email: str
 
-# ==========================================
-# LOGIN
-# ==========================================
 class LoginRequest(BaseModel):
     email: str
     senha_hash: str
 
-# ==========================================
-# DOCUMENTO BASE
-# ==========================================
+# =====================================================================
+# MODELOS DE DOCUMENTOS E GUIAS (TELA BEM-ESTAR)
+# =====================================================================
 class DocumentoBaseCreate(BaseModel):
     titulo: str = Field(..., max_length=200)
     tipo: str = Field(..., pattern="^(guia|faq|relato_anonimizado|conteudo_educativo)$")
@@ -65,16 +59,14 @@ class DocumentoBaseResponse(BaseModel):
     sensivel: bool
     hash_conteudo: str
 
-# ==========================================
-# ESTUDANTE_DOCUMENTO (N:N)
-# ==========================================
 class EstudanteDocumentoCreate(BaseModel):
     id_documento: int
 
-# ==========================================
-# CATEGORIA
-# ==========================================
+# =====================================================================
+# MODELOS DE CATEGORIAS (ISOLADAS POR ESTUDANTE + PADRÕES DO SISTEMA)
+# =====================================================================
 class CategoriaCreate(BaseModel):
+    id_estudante: Optional[int] = None
     nome: str = Field(..., max_length=30)
     cor_hex: str = Field(..., pattern="^#[0-9A-Fa-f]{6}$")
     peso_energia: int = Field(..., ge=1, le=5)
@@ -82,14 +74,15 @@ class CategoriaCreate(BaseModel):
 
 class CategoriaResponse(BaseModel):
     id_categoria: int
+    id_estudante: Optional[int] = None
     nome: str
     cor_hex: str
     peso_energia: int
     padrao_sistema: bool
 
-# ==========================================
-# JORNADA DE TRABALHO
-# ==========================================
+# =====================================================================
+# MODELOS DE JORNADA DE TRABALHO (TELA AJUSTES E LINHA DO DIA)
+# =====================================================================
 class JornadaTrabalhoCreate(BaseModel):
     id_estudante: int
     tipo: str = Field(..., pattern="^(aprendiz|estagiario)$")
@@ -111,9 +104,9 @@ class JornadaTrabalhoResponse(BaseModel):
     vigencia_inicio: date
     vigencia_fim: Optional[date] = None
 
-# ==========================================
-# COMPROMISSO
-# ==========================================
+# =====================================================================
+# MODELOS DE COMPROMISSOS (TAREFAS, HÁBITOS E ÁGUA)
+# =====================================================================
 class CompromissoCreate(BaseModel):
     id_estudante: int
     id_categoria: int
@@ -144,9 +137,9 @@ class CompromissoResponse(BaseModel):
     origem: str
     criado_em: datetime
 
-# ==========================================
-# METAS
-# ==========================================
+# =====================================================================
+# MODELOS DE METAS (TELA METAS)
+# =====================================================================
 class MetaCreate(BaseModel):
     id_estudante: int
     titulo: str = Field(..., max_length=150)
@@ -172,9 +165,9 @@ class MetaResponse(BaseModel):
     status: str
     criado_em: datetime
 
-# ==========================================
-# HABITO CHECKIN & BLOCO DESCOMPRESSÃO
-# ==========================================
+# =====================================================================
+# MODELOS DE CHECK-INS DE HÁBITOS E BLOCOS DE BEM-ESTAR
+# =====================================================================
 class CheckinCreate(BaseModel):
     id_compromisso: int
     data: date
