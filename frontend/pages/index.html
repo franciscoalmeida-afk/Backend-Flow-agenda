@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#14123A">
+    <meta name="theme-color" content="#121214">
     <title>Flow Agendas</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314123A'/%3E%3Crect x='6' y='10' width='8' height='12' rx='2' fill='%237C72FF'/%3E%3Crect x='15' y='10' width='4' height='12' rx='2' fill='%23E0287D'/%3E%3Crect x='20' y='10' width='3' height='12' rx='1.5' fill='%231FB6DB'/%3E%3Crect x='24' y='10' width='2.5' height='12' rx='1.25' fill='%232FD39A'/%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23121214'/%3E%3Crect x='6' y='10' width='8' height='12' rx='2' fill='%23E25C84'/%3E%3Crect x='15' y='10' width='4' height='12' rx='2' fill='%23FFD6E8'/%3E%3Crect x='20' y='10' width='3' height='12' rx='1.5' fill='%23FFE6A3'/%3E%3Crect x='24' y='10' width='2.5' height='12' rx='1.25' fill='%234CD964'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,7 +14,9 @@
 <body>
 <div class="app public" id="app">
 
-    <!-- NAVEGAÇÃO: barra lateral no desktop, barra inferior no celular -->
+    <!-- =================================================================
+         MENU LATERAL (DESKTOP) E BARRA INFERIOR (CELULAR)
+         ================================================================= -->
     <aside class="side" id="navbar">
         <div class="brand" onclick="navTo('screen-menu', 'nav-dashboard')">
             <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>flow
@@ -22,23 +24,29 @@
 
         <nav class="nav" id="nav-links" aria-label="Principal">
             <button class="nav-btn" id="nav-dashboard" onclick="navTo('screen-menu', 'nav-dashboard')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Hoje</span></button>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Hoje</span>
+            </button>
             <button class="nav-btn" id="nav-tarefas" onclick="navTo('screen-tarefas', 'nav-tarefas')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M3 6l1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg><span>Tarefas</span></button>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M3 6l1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg><span>Tarefas</span>
+            </button>
             <button class="nav-btn" id="nav-estudos" onclick="navTo('screen-estudos', 'nav-estudos')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Estudos</span></button>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Estudos</span>
+            </button>
             <button class="nav-btn" id="nav-habitos" onclick="navTo('screen-habitos', 'nav-habitos')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg><span>Hábitos</span></button>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg><span>Hábitos</span>
+            </button>
             <button class="nav-btn" id="nav-metas" onclick="navTo('screen-metas', 'nav-metas')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg><span>Metas</span></button>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg><span>Metas</span>
+            </button>
             <button class="nav-btn" id="nav-bemestar" onclick="navTo('screen-bemestar', 'nav-bemestar')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 9 2.5C21 13.5 17 17 12 21z"/></svg><span>Bem-estar</span></button>
-            <button class="nav-btn" id="nav-aya" onclick="navTo('screen-aya', 'nav-aya')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Aya</span></button>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 9 2.5C21 13.5 17 17 12 21z"/></svg><span>Bem-estar</span>
+            </button>
             <button class="nav-btn" id="nav-categorias" onclick="navTo('screen-categorias', 'nav-categorias')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1"/></svg><span>Categorias</span></button>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1"/></svg><span>Categorias</span>
+            </button>
             <button class="nav-btn" id="nav-config" onclick="navTo('screen-config', 'nav-config')">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M19 6h1M4 12h3M13 12h7M4 18h11M21 18h-1"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Ajustes</span></button>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M19 6h1M4 12h3M13 12h7M4 18h11M21 18h-1"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Ajustes</span>
+            </button>
         </nav>
 
         <button class="side-user" id="user-area" onclick="navTo('screen-config', 'nav-config')" aria-label="Abrir ajustes">
@@ -46,6 +54,7 @@
         </button>
     </aside>
 
+    <!-- CABEÇALHO SUPERIOR NO CELULAR -->
     <div class="mobile-top">
         <div class="brand light" onclick="navTo('screen-menu', 'nav-dashboard')"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>flow</div>
         <button class="avatar js-avatar" onclick="navTo('screen-config', 'nav-config')" aria-label="Abrir ajustes">A</button>
@@ -53,7 +62,9 @@
 
     <main class="main">
 
-        <!-- ENTRAR -->
+        <!-- =================================================================
+             TELA 1: ENTRAR (LOGIN)
+             ================================================================= -->
         <section id="screen-login" class="screen active">
             <div class="auth">
                 <div class="auth-pitch">
@@ -63,9 +74,9 @@
                         <p>O Flow organiza tarefas, hábitos e metas de quem divide a rotina entre aula e jornada de trabalho.</p>
                     </div>
                     <div class="demo" aria-hidden="true">
-                        <div class="demo-row"><span>Escola</span><div class="demo-lane"><b style="left:5.5%;width:30.5%;--c:#6C63FF;--d:.2s">Aula</b></div></div>
-                        <div class="demo-row"><span>Trabalho</span><div class="demo-lane"><b style="left:41.5%;width:33.5%;--c:#0A8FB3;--d:.4s">Jornada</b></div></div>
-                        <div class="demo-row"><span>Seu dia</span><div class="demo-lane"><b style="left:77%;width:12%;--c:#0E9F6E;--d:.6s">Estudo</b><b style="left:6%;width:14%;--c:#E0287D;--d:.8s">Treino</b></div></div>
+                        <div class="demo-row"><span>Escola</span><div class="demo-lane"><b style="left:5.5%;width:30.5%;--c:#E25C84;">Aula</b></div></div>
+                        <div class="demo-row"><span>Trabalho</span><div class="demo-lane"><b style="left:41.5%;width:33.5%;--c:#0A8FB3;">Jornada</b></div></div>
+                        <div class="demo-row"><span>Seu dia</span><div class="demo-lane"><b style="left:77%;width:12%;--c:#4CD964;color:#121214;">Estudo</b><b style="left:6%;width:14%;--c:#B8335F;">Treino</b></div></div>
                     </div>
                 </div>
                 <div class="auth-form">
@@ -83,7 +94,9 @@
             </div>
         </section>
 
-        <!-- CRIAR CONTA -->
+        <!-- =================================================================
+             TELA 2: CRIAR CONTA (CADASTRO)
+             ================================================================= -->
         <section id="screen-cadastro" class="screen">
             <div class="signup">
                 <button class="link back" onclick="navTo('screen-login')">Voltar para entrar</button>
@@ -118,7 +131,9 @@
             </div>
         </section>
 
-        <!-- HOJE -->
+        <!-- =================================================================
+             TELA 3: HOJE (DASHBOARD E LINHA DO DIA)
+             ================================================================= -->
         <section id="screen-menu" class="screen">
             <div class="head">
                 <div>
@@ -150,7 +165,9 @@
             </div>
         </section>
 
-        <!-- TAREFAS -->
+        <!-- =================================================================
+             TELA 4: TAREFAS
+             ================================================================= -->
         <section id="screen-tarefas" class="screen">
             <div class="head">
                 <div><h1>Tarefas</h1><p>Marque o círculo para concluir. Use o botão de status para marcar como em andamento.</p></div>
@@ -164,7 +181,9 @@
             <div id="subject-list"></div>
         </section>
 
-        <!-- ESTUDOS -->
+        <!-- =================================================================
+             TELA 5: ESTUDOS (ENSINO MÉDIO, PAS-UEM E ENEM)
+             ================================================================= -->
         <section id="screen-estudos" class="screen">
             <div class="head">
                 <div>
@@ -189,7 +208,9 @@
             <div class="study-grid" id="estudos-lista"></div>
         </section>
 
-        <!-- HÁBITOS -->
+        <!-- =================================================================
+             TELA 6: HÁBITOS
+             ================================================================= -->
         <section id="screen-habitos" class="screen">
             <div class="head">
                 <div><h1>Hábitos</h1><p>Marque o que fez hoje e mantenha a sequência.</p></div>
@@ -198,7 +219,9 @@
             <div id="habit-list"></div>
         </section>
 
-        <!-- METAS -->
+        <!-- =================================================================
+             TELA 7: METAS
+             ================================================================= -->
         <section id="screen-metas" class="screen">
             <div class="head">
                 <div><h1>Metas</h1><p>Vincule tarefas a uma meta e o progresso é calculado sozinho.</p></div>
@@ -207,7 +230,9 @@
             <div id="meta-list"></div>
         </section>
 
-        <!-- BEM-ESTAR -->
+        <!-- =================================================================
+             TELA 8: BEM-ESTAR (ÁGUA, SONO, FOCO E VÍDEO-AULAS)
+             ================================================================= -->
         <section id="screen-bemestar" class="screen">
             <div class="head">
                 <div>
@@ -286,7 +311,9 @@
             </div>
         </section>
 
-        <!-- CATEGORIAS -->
+        <!-- =================================================================
+             TELA 9: CATEGORIAS
+             ================================================================= -->
         <section id="screen-categorias" class="screen">
             <div class="head">
                 <div><h1>Categorias</h1><p>As categorias organizam suas tarefas por cor e pelo nível de energia que cada uma exige.</p></div>
@@ -297,7 +324,7 @@
                 <form id="form-categoria" onsubmit="saveCategoria(event)">
                     <div class="grid2">
                         <div class="field span2"><label for="categoria-nome">Nome</label><input type="text" id="categoria-nome" maxlength="30" placeholder="Ex: Faculdade" required></div>
-                        <div class="field"><label for="categoria-cor">Cor</label><input type="color" id="categoria-cor" value="#4B3FE4" required></div>
+                        <div class="field"><label for="categoria-cor">Cor</label><input type="color" id="categoria-cor" value="#E25C84" required></div>
                         <div class="field"><label for="categoria-peso">Peso de energia (1 a 5)</label><input type="number" id="categoria-peso" min="1" max="5" value="3" required>
                             <p class="hint">1 é uma atividade leve; 5 exige muita energia.</p></div>
                     </div>
@@ -311,7 +338,9 @@
             </div>
         </section>
 
-        <!-- AJUSTES -->
+        <!-- =================================================================
+             TELA 10: AJUSTES E JORNADA DE TRABALHO
+             ================================================================= -->
         <section id="screen-config" class="screen">
             <div class="head"><div><h1>Ajustes</h1><p>Seu perfil, sua jornada de trabalho e preferências.</p></div></div>
             <div class="panel settings">
@@ -356,32 +385,14 @@
             </div>
         </section>
 
-        <!-- AYA -->
-        <section id="screen-aya" class="screen">
-            <div class="chat panel">
-                <div class="chat-head">
-                    <div class="aya-av" id="aya-face">✨</div>
-                    <div><h2>Aya</h2><p class="st"><span class="st-on">Online</span><span class="st-typing">digitando…</span></p></div>
-                </div>
-                <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
-                <div class="typing" id="typing-bar"><span class="mini">✨</span><span class="dots"><i></i><i></i><i></i></span></div>
-                <div class="chat-chips">
-                    <button class="chip-btn" onclick="askAya('Dica de foco')">Dica de foco</button>
-                    <button class="chip-btn" onclick="askAya('Minhas tarefas')">Minhas tarefas</button>
-                    <button class="chip-btn" onclick="askAya('Meus hábitos')">Meus hábitos</button>
-                    <button class="chip-btn" onclick="askAya('Minhas metas')">Minhas metas</button>
-                    <button class="chip-btn" onclick="askAya('Quanta água bebi?')">Quanta água bebi?</button>
-                </div>
-                <div class="composer">
-                    <input type="text" id="chat-input" placeholder="Escreva para a Aya" aria-label="Mensagem para a Aya" onkeypress="handleEnter(event)" autocomplete="off">
-                    <button class="send" onclick="sendMessage()" aria-label="Enviar mensagem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button>
-                </div>
-            </div>
-        </section>
     </main>
 </div>
 
-<!-- MODAIS -->
+<!-- =====================================================================
+     MODAIS (JANELAS SOBREPOSTAS DE CADASTRO E CONTEÚDO)
+     ===================================================================== -->
+
+<!-- MODAL: NOVA TAREFA -->
 <div class="overlay" id="modal-tarefa" onclick="if(event.target===this)closeModal('modal-tarefa')">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t-tarefa">
         <h2 id="t-tarefa">Nova tarefa</h2>
@@ -410,6 +421,7 @@
     </div>
 </div>
 
+<!-- MODAL: NOVO HÁBITO -->
 <div class="overlay" id="modal-habito" onclick="if(event.target===this)closeModal('modal-habito')">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t-habito">
         <h2 id="t-habito">Novo hábito</h2>
@@ -442,6 +454,7 @@
     </div>
 </div>
 
+<!-- MODAL: NOVA META -->
 <div class="overlay" id="modal-meta" onclick="if(event.target===this)closeModal('modal-meta')">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t-meta">
         <h2 id="t-meta">Nova meta</h2>
@@ -458,6 +471,7 @@
     </div>
 </div>
 
+<!-- MODAL: NOVA JORNADA DE TRABALHO -->
 <div class="overlay" id="modal-jornada" onclick="if(event.target===this)closeModal('modal-jornada')">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t-jornada">
         <h2 id="t-jornada">Jornada de trabalho</h2>
@@ -495,6 +509,7 @@
     </div>
 </div>
 
+<!-- MODAL: VÍDEO-AULAS E GUIAS DE ESTUDO/BEM-ESTAR -->
 <div class="overlay" id="modal-conteudo" onclick="if(event.target===this)closeModal('modal-conteudo')">
     <div class="sheet sheet-wide" role="dialog" aria-modal="true" aria-labelledby="t-conteudo">
         <span class="well-badge" id="conteudo-tag">Guia</span>
@@ -509,6 +524,7 @@
     </div>
 </div>
 
+<!-- NOTIFICAÇÕES FLUTUANTES (TOASTS) -->
 <div id="toast-wrap" aria-live="polite"></div>
 
 <script src="../js/script.js"></script>
