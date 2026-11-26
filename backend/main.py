@@ -18,6 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# =====================================================================
+# TRATAMENTO GLOBAL DE ERROS DO SUPABASE
+# =====================================================================
 @app.exception_handler(APIError)
 async def supabase_api_error_handler(request: Request, exc: APIError):
     mensagem = exc.message or "Erro no banco de dados."
@@ -32,9 +35,9 @@ async def supabase_api_error_handler(request: Request, exc: APIError):
 def inicio():
     return {"mensagem": "API do Flow Agendas funcionando!"}
 
-# ==========================================
-# CRUD DE ESTUDANTES
-# ==========================================
+# =====================================================================
+# CRUD DE ESTUDANTES (TELA CADASTRO E PERFIL)
+# =====================================================================
 @app.post("/estudantes", status_code=status.HTTP_201_CREATED, tags=["Estudantes"])
 def criar_estudante(est: schemas.EstudanteCreate):
     resposta = supabase.table("estudante").insert(est.model_dump(mode="json")).execute()
@@ -58,9 +61,9 @@ def deletar_estudante(id_estudante: int):
         raise HTTPException(status_code=404, detail="Estudante não encontrado")
     return None
 
-# ==========================================
-# LOGIN
-# ==========================================
+# =====================================================================
+# AUTENTICAÇÃO (TELA LOGIN)
+# =====================================================================
 @app.post("/login", tags=["Autenticação"])
 def fazer_login(dados: schemas.LoginRequest):
     resposta = supabase.table("estudante").select("*").eq("email", dados.email).execute()
@@ -76,9 +79,9 @@ def fazer_login(dados: schemas.LoginRequest):
     estudante.pop("senha_hash", None)
     return estudante
 
-# ==========================================
-# CRUD DE INSTITUIÇÕES
-# ==========================================
+# =====================================================================
+# CRUD DE INSTITUIÇÕES (BUSCA DE ESCOLA NO CADASTRO)
+# =====================================================================
 @app.post("/instituicoes", status_code=status.HTTP_201_CREATED, tags=["Instituições"])
 def criar_instituicao(inst: schemas.InstituicaoCreate):
     resposta = supabase.table("instituicao").insert(inst.model_dump(mode="json")).execute()
@@ -102,9 +105,9 @@ def deletar_instituicao(id_instituicao: int):
         raise HTTPException(status_code=404, detail="Instituição não encontrada")
     return None
 
-# ==========================================
-# CRUD DE CURSOS
-# ==========================================
+# =====================================================================
+# CRUD DE CURSOS (SELEÇÃO DE CURSO NO CADASTRO)
+# =====================================================================
 @app.post("/cursos", status_code=status.HTTP_201_CREATED, tags=["Cursos"])
 def criar_curso(curso: schemas.CursoCreate):
     resposta = supabase.table("curso").insert(curso.model_dump(mode="json")).execute()
@@ -140,9 +143,9 @@ def deletar_curso(id_curso: int):
         raise HTTPException(status_code=404, detail="Curso não encontrado")
     return None
 
-# ==========================================
-# CRUD DE DOCUMENTO_BASE
-# ==========================================
+# =====================================================================
+# DOCUMENTOS E GUIAS DE APOIO (TELA BEM-ESTAR)
+# =====================================================================
 @app.post("/documentos", status_code=status.HTTP_201_CREATED, tags=["Documentos"])
 def criar_documento(doc: schemas.DocumentoBaseCreate):
     resposta = supabase.table("documento_base").insert(doc.model_dump(mode="json")).execute()
@@ -162,9 +165,6 @@ def deletar_documento(id_documento: int):
         raise HTTPException(status_code=409, detail="Documento vinculado a estudantes. Desvincule antes de excluir.")
     return None
 
-# ==========================================
-# LIGAÇÃO N:N: ESTUDANTE <-> DOCUMENTO
-# ==========================================
 @app.post("/estudantes/{id_estudante}/documentos", status_code=status.HTTP_201_CREATED, tags=["Estudante_Documento"])
 def vincular_documento(id_estudante: int, dados: schemas.EstudanteDocumentoCreate):
     est = supabase.table("estudante").select("id_estudante").eq("id_estudante", id_estudante).execute()
@@ -197,17 +197,37 @@ def desvincular_documento(id_estudante: int, id_documento: int):
         raise HTTPException(status_code=404, detail="Vínculo não encontrado.")
     return None
 
-# ==========================================
-# CRUD DE CATEGORIAS
-# ==========================================
+# =====================================================================
+# CRUD DE CATEGORIAS (TELA CATEGORIAS - ISOLADAS POR ESTUDANTE)
+# =====================================================================
 @app.post("/categorias", status_code=status.HTTP_201_CREATED, tags=["Categorias"])
 def criar_categoria(cat: schemas.CategoriaCreate):
+    # Verifica apenas se o mesmo aluno já criou uma categoria com esse nome
+    if cat.id_estudante is not None:
+        existente = (
+            supabase.table("categoria")
+            .select("id_categoria")
+            .eq("id_estudante", cat.id_estudante)
+            .ilike("nome", cat.nome.strip())
+            .execute()
+        )
+        if existente.data:
+            raise HTTPException(
+                status_code=400,
+                detail="Você já criou uma categoria com esse nome."
+            )
+
     resposta = supabase.table("categoria").insert(cat.model_dump(mode="json")).execute()
     return resposta.data[0]
 
 @app.get("/categorias", tags=["Categorias"])
-def listar_categorias():
-    return supabase.table("categoria").select("*").execute().data
+def listar_categorias(id_estudante: int = None):
+    query = supabase.table("categoria").select("*")
+    if id_estudante is not None:
+        query = query.or_(f"padrao_sistema.eq.true,id_estudante.eq.{id_estudante}")
+    else:
+        query = query.eq("padrao_sistema", True)
+    return query.execute().data
 
 @app.put("/categorias/{id_categoria}", tags=["Categorias"])
 def atualizar_categoria(id_categoria: int, cat: schemas.CategoriaCreate):
@@ -226,9 +246,9 @@ def deletar_categoria(id_categoria: int):
         raise HTTPException(status_code=409, detail="Categoria vinculada a compromissos. Não pode ser excluída.")
     return None
 
-# ==========================================
-# CRUD DE JORNADAS
-# ==========================================
+# =====================================================================
+# CRUD DE JORNADAS DE TRABALHO (TELA AJUSTES)
+# =====================================================================
 @app.post("/jornadas", status_code=status.HTTP_201_CREATED, tags=["Jornadas"])
 def criar_jornada(jornada: schemas.JornadaTrabalhoCreate):
     est = supabase.table("estudante").select("id_estudante").eq("id_estudante", jornada.id_estudante).execute()
@@ -272,9 +292,9 @@ def criar_jornada_dia(item: dict):
     resposta = supabase.table("jornada_dia").insert(item).execute()
     return resposta.data[0]
 
-# ==========================================
-# CRUD DE COMPROMISSOS
-# ==========================================
+# =====================================================================
+# CRUD DE COMPROMISSOS (TELAS HOJE, TAREFAS E HÁBITOS)
+# =====================================================================
 @app.post("/compromissos", status_code=status.HTTP_201_CREATED, tags=["Compromissos"])
 def criar_compromisso(comp: schemas.CompromissoCreate):
     est = supabase.table("estudante").select("id_estudante").eq("id_estudante", comp.id_estudante).execute()
@@ -325,9 +345,9 @@ def deletar_compromisso(id_compromisso: int):
         raise HTTPException(status_code=404, detail="Compromisso não encontrado")
     return None
 
-# ==========================================
-# METAS
-# ==========================================
+# =====================================================================
+# CRUD DE METAS (TELA METAS)
+# =====================================================================
 @app.post("/metas", status_code=status.HTTP_201_CREATED, tags=["Metas"])
 def criar_meta(meta: schemas.MetaCreate):
     resposta = supabase.table("meta").insert(meta.model_dump(mode="json")).execute()
@@ -357,9 +377,9 @@ def deletar_meta(id_meta: int):
     supabase.table("meta").delete().eq("id_meta", id_meta).execute()
     return None
 
-# ==========================================
-# CHECK-INS E BLOCOS (BEM-ESTAR)
-# ==========================================
+# =====================================================================
+# CHECK-INS DE HÁBITOS E BLOCOS DE DESCOMPRESSÃO (TELAS HÁBITOS E BEM-ESTAR)
+# =====================================================================
 @app.post("/checkins", status_code=status.HTTP_201_CREATED, tags=["Hábitos"])
 def criar_checkin(checkin: schemas.CheckinCreate):
     try:
